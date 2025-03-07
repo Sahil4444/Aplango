@@ -1,4 +1,5 @@
 import React from "react";
+import { useLocation } from "react-router-dom";
 
 import della from "../../../assets/clients/della.jpg";
 import dine from "../../../assets/clients/dine.jpg";
@@ -85,8 +86,13 @@ const clientslist = [
 ];
 
 function Clients() {
+  const location = useLocation();
   return (
-    <div className="lg:px-10 xl:px-10 md:px-10 px-6 py-16 w-full bg-gradient-to-br from-[#f5f7fa] to-[#c3cfe2]">
+    <div
+      className={`lg:px-10 xl:px-10 md:px-10 px-6 py-16 w-full ${
+        location.pathname !== "/Aplango/ui" ? "mt-0" : "mt-52"
+      } md:mt-0 bg-gradient-to-br from-[#f5f7fa] to-[#c3cfe2]`}
+    >
       <div className="heading flex flex-col items-center mb-10 md:mb-20">
         <h2 className="text-3xl text-center md:text-5xl xl:text-5xl font-bold text-gray-700 mb-3">
           Top Brands & <span className="text-indigo-500"> Stores</span>

@@ -139,7 +139,7 @@ export default function OffersPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 pt-48 md:py-8">
       <h1 className="text-3xl md:text-6xl font-bold text-center text-indigo-600 mb-6">
         Offers for you
       </h1>

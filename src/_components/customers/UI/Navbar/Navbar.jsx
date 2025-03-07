@@ -4,6 +4,9 @@ import Logo from "./Logo";
 import MobileDrawer from "./MobileDrawer";
 import { Link } from "react-router-dom";
 import { useNavigate, useLocation } from "react-router-dom";
+import { signOut } from "firebase/auth";
+import { auth } from "../../../../../Database/Firebase";
+import { toast } from "react-toastify";
 
 const Navbar = () => {
   const [isHomeOpen, setIsHomeOpen] = useState(false);
@@ -58,13 +61,16 @@ const Navbar = () => {
     });
   };
 
-  const handleLogout = () => {
-    navigate("/Aplango/");
-    window.scroll({
-      top: 0, // Scroll vertically to 100 pixels
-      left: 0, // Don't change horizontal position
-      behavior: "smooth", // Smooth scroll
-    });
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      navigate("/Aplango/")
+      toast.success("Logout successful!", { position: "top-center" });
+      console.log("User logged out");
+    } catch (error) {
+      console.error("Logout error:", error);
+      toast.error("Error logging out. Please try again.", { position: "top-center" });
+    }
   };
 
   useEffect(() => {
