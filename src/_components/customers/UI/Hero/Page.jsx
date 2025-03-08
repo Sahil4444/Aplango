@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import {
   Select,
@@ -17,6 +15,11 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Timer } from "./timer";
+import { toast } from "react-toastify";
+import emailjs from "@emailjs/browser";
+
+import { auth, firestore } from "../../../../../Database/Firebase";
+import { doc, getDoc } from "firebase/firestore";
 
 const OFFERS = {
   Imagica: [
@@ -24,25 +27,29 @@ const OFFERS = {
       id: "imagica-1",
       name: "Imagica",
       title: "30% Off on All Items",
-      description: "Get amazing discounts on all Imagica products this season",
+      description:
+        "Enjoy a massive 30% discount on all Imagica products this season. Whether it's merchandise, food, or attractions, save big on your visit!",
     },
     {
       id: "imagica-2",
       name: "Imagica",
       title: "Buy 2 Get 1 Free",
-      description: "Special offer on selected merchandise",
+      description:
+        "Grab any two items and get a third one absolutely free. This limited-time offer is perfect for families and groups looking to make the most of their Imagica experience!",
     },
     {
       id: "imagica-3",
       name: "Imagica",
       title: "Student Discount 20%",
-      description: "Special discount for students with valid ID",
+      description:
+        "Students can enjoy a special 20% discount on tickets and select items by showing a valid student ID. Don’t miss out on this budget-friendly way to have fun!",
     },
     {
       id: "imagica-4",
       name: "Imagica",
       title: "Family Package Deal",
-      description: "Save 40% on family tickets of 4 or more",
+      description:
+        "Book tickets for four or more family members and get a 40% discount on your total purchase. Spend quality time with your loved ones at an unbeatable price!",
     },
   ],
   Habib: [
@@ -50,25 +57,29 @@ const OFFERS = {
       id: "habib-1",
       name: "Habib",
       title: "Buy 1 Get 1 Free",
-      description: "Special weekend offer on selected items",
+      description:
+        "Shop your favorite jewelry pieces and get a second one for free. This special weekend deal applies to selected items, making it the perfect time to add to your collection!",
     },
     {
       id: "habib-2",
       name: "Habib",
       title: "50% Off on Jewelry",
-      description: "Exclusive discount on gold jewelry",
+      description:
+        "Get 50% off on our exclusive jewelry collection, featuring stunning gold and silver pieces. Elevate your style with timeless accessories at half the price!",
     },
     {
       id: "habib-3",
       name: "Habib",
       title: "Diamond Collection Sale",
-      description: "Up to 30% off on diamond collection",
+      description:
+        "Enjoy up to 30% off on our exquisite diamond collection. Whether you're looking for engagement rings or elegant necklaces, now is the perfect time to buy!",
     },
     {
       id: "habib-4",
       name: "Habib",
       title: "Free Gift on Purchase",
-      description: "Get a free gift on purchases above $500",
+      description:
+        "Receive a free luxury gift when you spend $500 or more at Habib. A perfect way to treat yourself or surprise a loved one with something extra!",
     },
   ],
   Splash: [
@@ -76,25 +87,29 @@ const OFFERS = {
       id: "splash-1",
       name: "Splash",
       title: "Flat 50% Off",
-      description: "Massive clearance sale on all summer collection",
+      description:
+        "Shop your favorite fashion pieces at half price during our massive clearance sale. Don't miss this chance to upgrade your wardrobe with trendy outfits!",
     },
     {
       id: "splash-2",
       name: "Splash",
       title: "New Arrival Discount",
-      description: "25% off on new winter collection",
+      description:
+        "Get 25% off on the latest winter collection, featuring stylish jackets, sweaters, and accessories. Stay cozy and fashionable this season!",
     },
     {
       id: "splash-3",
       name: "Splash",
       title: "Bundle Offer",
-      description: "Buy any 3 items and get 40% off",
+      description:
+        "Buy any 3 items from our collection and enjoy a 40% discount on your total purchase. Mix and match your favorite styles while saving big!",
     },
     {
       id: "splash-4",
       name: "Splash",
       title: "Premium Collection Deal",
-      description: "Up to 35% off on premium brands",
+      description:
+        "Save up to 35% on our premium brands, featuring high-quality fabrics and exclusive designs. Elevate your fashion game without breaking the bank!",
     },
   ],
   Suzuki: [
@@ -102,25 +117,29 @@ const OFFERS = {
       id: "suzuki-1",
       name: "Suzuki",
       title: "Free Service Check",
-      description: "Complimentary vehicle inspection and basic service",
+      description:
+        "Get a complimentary vehicle inspection and basic service to ensure your car is running smoothly. Our experts will check essential components and provide recommendations!",
     },
     {
       id: "suzuki-2",
       name: "Suzuki",
       title: "Oil Change Offer",
-      description: "50% off on oil change service",
+      description:
+        "Enjoy a 50% discount on your next oil change and keep your engine running at peak performance. This offer ensures long-lasting protection for your vehicle!",
     },
     {
       id: "suzuki-3",
       name: "Suzuki",
       title: "Spare Parts Discount",
-      description: "20% off on genuine spare parts",
+      description:
+        "Save 20% on genuine Suzuki spare parts, ensuring the best quality and durability for your vehicle. Keep your car in top condition at a lower cost!",
     },
     {
       id: "suzuki-4",
       name: "Suzuki",
       title: "Winter Service Package",
-      description: "Complete winter check-up at special rates",
+      description:
+        "Prepare your car for winter with our special service package, including battery checks, tire inspections, and antifreeze top-ups at exclusive rates!",
     },
   ],
 };
@@ -130,8 +149,72 @@ export default function OffersPage() {
   const [redeemedOffers, setRedeemedOffers] = useState({});
   const [expiredOffers, setExpiredOffers] = useState({});
 
-  const handleRedeem = (offerId) => {
-    setRedeemedOffers((prev) => ({ ...prev, [offerId]: true }));
+  const handleRedeem = async (offerId) => {
+    try {
+      // Get current user
+      const currentUser = auth.currentUser;
+
+      if (!currentUser) {
+        toast.error("You must be logged in to redeem offers", {
+          position: "top-center",
+        });
+        return;
+      }
+
+      // Fetch user data from Firestore
+      const userDocRef = doc(firestore, "users", currentUser.uid);
+      const userDoc = await getDoc(userDocRef);
+
+      if (!userDoc.exists()) {
+        toast.error("User profile not found", {
+          position: "top-center",
+        });
+        return;
+      }
+
+      const userData = userDoc.data();
+
+      // Get the selected offer details
+      const selectedOffer = OFFERS[selectedBrand].find(
+        (offer) => offer.id === offerId
+      );
+
+      // Create template params with user data
+      const templateParams = {
+        to_email: userData.email || currentUser.email,
+        to_name:
+          userData.displayName || currentUser.displayName || "Valued Customer",
+        offer_name: selectedOffer.title,
+        offer_description: selectedOffer.description,
+        brand_name: selectedOffer.name,
+      };
+
+      console.log(templateParams.to_email);
+      console.log(templateParams.to_name);
+
+      // Update the UI to show the offer as redeemed
+      setRedeemedOffers((prev) => ({ ...prev, [offerId]: true }));
+
+      // Send email via EmailJS
+      const service_id = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+      const template_id = import.meta.env
+        .VITE_EMAILJS_SEND_REDEEM_OFFER_MAIL_TEMPLATE_ID;
+      const public_key = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+
+      await emailjs.send(service_id, template_id, templateParams, public_key);
+
+      toast.success(
+        "Offer Redeemed Successfully! Redemption details sent to your email.",
+        {
+          position: "top-center",
+        }
+      );
+    } catch (error) {
+      console.error("Error redeeming offer:", error);
+      toast.error("Failed to redeem offer. Please try again.", {
+        position: "top-center",
+      });
+    }
   };
 
   const handleExpire = (offerId) => {

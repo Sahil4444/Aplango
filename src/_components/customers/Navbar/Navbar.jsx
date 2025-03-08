@@ -87,6 +87,11 @@ const Navbar = () => {
     }
   };
 
+  const handleAdmin = (e) => {
+    e.preventDefault();
+    navigate('/Aplango/admin');
+  }
+
   const handleScrollHome = () => {
     window.scroll({
       top: 0, // Scroll vertically to 100 pixels
@@ -187,6 +192,7 @@ const Navbar = () => {
             </div>
           </div>
           <div className="hidden md:block">
+            <span onClick={handleAdmin} className="me-2 font-medium text-gray-800 cursor-pointer hover:text-indigo-500">Admin</span>
             <button
               onClick={() => navigate("/Aplango/login")}
               className="bg-transparent text-gray-800 hover:cursor-pointer border border-gray-800 hover:bg-indigo-700 hover:text-white w-28 py-2 rounded-md text-sm font-medium mr-2"

@@ -26,8 +26,6 @@ import {
 import Navbar from "../Navbar/Navbar";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
-import { ClipLoader } from "react-spinners";
-import { initializeApp } from "firebase/app";
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,

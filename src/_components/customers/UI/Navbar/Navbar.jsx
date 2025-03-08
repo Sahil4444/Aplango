@@ -189,7 +189,12 @@ const Navbar = () => {
             </div>
           </div>
           <div className="hidden md:block">
-            <span className="me-3">Welcome, <span className="text-indigo-500 font-semibold">{username || "Guest"}</span> </span>
+            <span className="me-3">
+              Welcome,{" "}
+              <span className="text-indigo-500 font-semibold">
+                {username || ""}
+              </span>{" "}
+            </span>
             <button
               onClick={handleLogout}
               className="bg-transparent text-gray-800 hover:cursor-pointer border border-gray-800 hover:bg-indigo-700 hover:text-white w-28 py-2 rounded-md text-sm font-medium mr-2"
