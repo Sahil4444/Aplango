@@ -173,6 +173,7 @@ export default function OffersPage() {
       }
 
       const userData = userDoc.data();
+      const userName = userData.displayName || userData.name || currentUser.displayName || "Valued Customer";
 
       // Get the selected offer details
       const selectedOffer = OFFERS[selectedBrand].find(
@@ -183,7 +184,7 @@ export default function OffersPage() {
       const templateParams = {
         to_email: userData.email || currentUser.email,
         to_name:
-          userData.displayName || currentUser.displayName || "Valued Customer",
+          userName,
         offer_name: selectedOffer.title,
         offer_description: selectedOffer.description,
         brand_name: selectedOffer.name,
@@ -191,15 +192,18 @@ export default function OffersPage() {
 
       console.log(templateParams.to_email);
       console.log(templateParams.to_name);
+      console.log(templateParams.offer_name);
+      console.log(templateParams.offer_description);
+      console.log(templateParams.brand_name);
 
       // Update the UI to show the offer as redeemed
       setRedeemedOffers((prev) => ({ ...prev, [offerId]: true }));
 
       // Send email via EmailJS
-      const service_id = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+      const service_id = import.meta.env.VITE_EMAILJS_SERVICE_ID2;
       const template_id = import.meta.env
-        .VITE_EMAILJS_SEND_REDEEM_OFFER_MAIL_TEMPLATE_ID;
-      const public_key = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+        .VITE_EMAILJS_SEND_REDEEM_OFFER_MAIL_TEMPLATE_ID2;
+      const public_key = import.meta.env.VITE_EMAILJS_PUBLIC_KEY2;
 
       await emailjs.send(service_id, template_id, templateParams, public_key);
 
