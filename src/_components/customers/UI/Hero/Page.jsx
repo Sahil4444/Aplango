@@ -200,10 +200,10 @@ export default function OffersPage() {
       setRedeemedOffers((prev) => ({ ...prev, [offerId]: true }));
 
       // Send email via EmailJS
-      const service_id = import.meta.env.VITE_EMAILJS_SERVICE_ID2;
+      const service_id = import.meta.env.VITE_EMAILJS_SERVICE_ID;
       const template_id = import.meta.env
         .VITE_EMAILJS_SEND_REDEEM_OFFER_MAIL_TEMPLATE_ID2;
-      const public_key = import.meta.env.VITE_EMAILJS_PUBLIC_KEY2;
+      const public_key = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
       await emailjs.send(service_id, template_id, templateParams, public_key);
 
