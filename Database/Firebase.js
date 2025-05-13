@@ -15,5 +15,6 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
+// auth.settings.appVerificationDisabledForTesting = true;
 export const analytics = getAnalytics(app)
 export const firestore = getFirestore(app);

@@ -1,9 +1,26 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import React from "react";
 import Sidebar from "./_components/Sidebar/Sidebar";
 import Navbar from "./_components/Navbar/Navbar";
+import { logoutAdmin, getAdminUser } from "@/utils/adminAuth";
+import { useEffect } from "react";
 
 function PagesLayout() {
+  const navigate = useNavigate();
+  const adminUser = getAdminUser();
+
+  useEffect(() => {
+    if (!adminUser && location.pathname !== "/Aplango/admin/login") {
+      navigate("/Aplango/admin/login");
+    }
+    // Don't redirect again if already on login page
+  }, []); // Run only on initial render
+
+  const handleLogout = () => {
+    logoutAdmin();
+    navigate("/Aplango/admin/login");
+  };
+
   return (
     <div className="min-h-screen bg-white">
       <Sidebar />

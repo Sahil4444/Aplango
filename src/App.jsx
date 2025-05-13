@@ -21,6 +21,7 @@ import RegisterAdmin from "./_components/admin/Pages/RegisterAdmin";
 import CardRegister from "./_components/admin/Pages/CardRegister";
 import BrandRegister from "./_components/admin/Pages/BrandRegister";
 import Offers from "./_components/admin/Pages/Offers";
+import AdminLogin from "./_components/admin/Pages/AdminLogin";
 
 const router = createBrowserRouter([
   {
@@ -48,6 +49,10 @@ const router = createBrowserRouter([
         element: <Contact />,
       },
     ],
+  },
+  {
+    path: "/Aplango/admin/login",
+    element: <AdminLogin />,
   },
   {
     path: "/Aplango/admin/",
@@ -86,7 +91,7 @@ const router = createBrowserRouter([
         element: <History />,
       },
       {
-        path: "alerts",
+        path: "redemptions",
         element: <Notifications />,
       },
       {

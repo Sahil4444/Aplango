@@ -54,9 +54,9 @@ function Sidebar() {
       path: "/Aplango/admin/history",
     },
     {
-      label: "Notifications",
+      label: "Redemptions",
       icon: <BellRing />,
-      path: "/Aplango/admin/alerts",
+      path: "/Aplango/admin/redemptions",
     },
 
     {

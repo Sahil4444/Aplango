@@ -59,11 +59,12 @@ function Contact() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form action='https://formspree.io/f/xvgarbrr' method="POST" className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="name">Name</Label>
                 <Input
                   id="name"
+                  name='Name'
                   placeholder="Your name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
@@ -74,6 +75,7 @@ function Contact() {
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
+                  name='Email'
                   type="email"
                   placeholder="your.email@example.com"
                   value={email}
@@ -85,6 +87,7 @@ function Contact() {
                 <Label htmlFor="message">Message</Label>
                 <Textarea
                   id="message"
+                  name='Message'
                   placeholder="Your message here..."
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
