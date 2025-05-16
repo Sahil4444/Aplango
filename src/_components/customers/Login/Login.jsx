@@ -26,12 +26,7 @@ import {
 import Navbar from "../Navbar/Navbar"
 import { useNavigate, useLocation } from "react-router-dom"
 import { toast } from "react-toastify"
-import {
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  RecaptchaVerifier,
-  signInWithPhoneNumber,
-} from "firebase/auth"
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth"
 import { auth, firestore } from "../../../../Database/Firebase"
 import { collection, doc, getDocs, query, setDoc, where } from "firebase/firestore"
 import emailjs from "@emailjs/browser"
@@ -43,8 +38,6 @@ export default function AnimatedLoginForm() {
   const [flag, setFlag] = useState(false)
   const [otpLoading, setOtpLoading] = useState(false)
   const [genOtp, setGenOtp] = useState("")
-
-  const [canResend, setCanResend] = useState(false)
 
   const [isCardValid, setIsCardValid] = useState(false)
   const [userExists, setUserExists] = useState(false)
@@ -64,31 +57,12 @@ export default function AnimatedLoginForm() {
     otp: "",
   })
 
-  // Initialize invisible reCAPTCHA
-  const initializeRecaptcha = () => {
-    if (!window.recaptchaVerifier) {
-      window.recaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container", {
-        size: "invisible",
-        callback: () => {
-          // reCAPTCHA solved, allow sending SMS
-          console.log("reCAPTCHA verified")
-        },
-        "expired-callback": () => {
-          // Reset reCAPTCHA
-          console.log("reCAPTCHA expired")
-        },
-      })
-    }
-  }
-
   useEffect(() => {
     if (timer > 0) {
       const interval = setInterval(() => {
         setTimer((prevTimer) => prevTimer - 1)
       }, 1000)
       return () => clearInterval(interval)
-    } else {
-      setCanResend(true)
     }
   }, [timer])
 
@@ -143,6 +117,8 @@ export default function AnimatedLoginForm() {
     if (formData.email && formData.phone) {
       setIsLoading(true)
       setFlag(true)
+      setTimer(60) // Set timer to 60 seconds
+      // Disable resend button while timer is running
 
       // Generate a 4-digit OTP
       const generatedOTP = Math.floor(1000 + Math.random() * 9000)
@@ -159,7 +135,6 @@ export default function AnimatedLoginForm() {
         await emailjs.send(service_id, template_id, templateParams, public_key)
 
         // Initialize reCAPTCHA
-        initializeRecaptcha()
 
         // Format phone number (ensure it has country code)
         let phoneNumber = formData.phone
@@ -167,25 +142,9 @@ export default function AnimatedLoginForm() {
           // Add India country code if not present (modify as needed)
           phoneNumber = "+91" + phoneNumber
         }
-
-        // Send OTP via SMS
-        try {
-          const appVerifier = window.recaptchaVerifier
-          const confirmation = await signInWithPhoneNumber(auth, phoneNumber, appVerifier)
-          setConfirmationResult(confirmation)
-
-          toast.success("OTP sent to your email and phone number", {
-            position: "top-center",
-          })
-
-          setTimer(60)
-          setCanResend(false)
-        } catch (smsError) {
-          console.error("Error sending SMS OTP:", smsError)
-          toast.warning("SMS OTP failed, but email OTP was sent", {
-            position: "top-center",
-          })
-        }
+        toast.success("OTP sent to your email.", {
+          position: "top-center",
+        })
       } catch (error) {
         console.error("Error sending OTP:", error)
         toast.error("Failed to send OTP. Please try again.", {
@@ -206,30 +165,20 @@ export default function AnimatedLoginForm() {
     try {
       // Verify email OTP
       const emailOtpValid = formData.otp == genOtp
-
-      // Verify SMS OTP if confirmation result exists
-      let smsOtpValid = false
-      if (confirmationResult) {
-        try {
-          await confirmationResult.confirm(formData.otp)
-          smsOtpValid = true
-          setPhoneVerified(true)
-        } catch (error) {
-          console.error("SMS OTP verification failed:", error)
-          // If SMS verification fails but email verification passes, we'll still proceed
-        }
-      }
-
       // If either email or SMS OTP is valid, consider it verified
-      if (emailOtpValid || smsOtpValid) {
+      if (emailOtpValid) {
         toast.success("OTP Verified Successfully!", { position: "top-center" })
         setIsOtpVerified(true)
       } else {
-        toast.error("Invalid OTP. Please try again!", { position: "top-center" })
+        toast.error("Invalid OTP. Please try again!", {
+          position: "top-center",
+        })
       }
     } catch (error) {
       console.error("OTP verification error:", error)
-      toast.error("OTP verification failed. Please try again!", { position: "top-center" })
+      toast.error("OTP verification failed. Please try again!", {
+        position: "top-center",
+      })
     } finally {
       setOtpLoading(false)
     }
@@ -502,7 +451,12 @@ export default function AnimatedLoginForm() {
                             placeholder="Enter your email"
                             className="pl-10"
                             value={formData.email}
-                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                email: e.target.value,
+                              })
+                            }
                             required
                           />
                         </div>
@@ -518,7 +472,12 @@ export default function AnimatedLoginForm() {
                             placeholder="Enter your phone number"
                             className="pl-10"
                             value={formData.phone}
-                            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                phone: e.target.value,
+                              })
+                            }
                             required
                           />
                         </div>
@@ -527,25 +486,37 @@ export default function AnimatedLoginForm() {
                       <div className="space-y-2">
                         <Button
                           type="button"
-                          className="bg-white text-black border border-slate-500 hover:bg-indigo-500 hover:border-0 hover:text-white"
+                          className="bg-white text-black border border-slate-500 hover:bg-indigo-500 hover:border-0 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
                           onClick={handleGetOTP}
                           disabled={isLoading || timer > 0}
                         >
-                          {isLoading ? "Sending..." : "Get OTP"}
+                          {isLoading ? (
+                            <>
+                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                              Sending...
+                            </>
+                          ) : (
+                            "Get OTP"
+                          )}
                         </Button>
                       </div>
 
                       {flag && (
                         <div className="my-2 flex items-center justify-between">
-                          <p className="m-0 text-sm">
+                          <p className="m-0 text-sm text-gray-600">
                             {timer > 0
-                              ? `${Math.floor(timer / 60)}:${(timer % 60).toString().padStart(2, "0")}`
-                              : "00:00"}
+                              ? `Resend OTP in ${Math.floor(timer / 60)}:${(timer % 60).toString().padStart(2, "0")}`
+                              : "OTP timer expired"}
                           </p>
-                          {canResend && (
-                            <span className="mt-0 text-md text-indigo-700 cursor-pointer" onClick={handleGetOTP}>
+                          {timer === 0 && (
+                            <button
+                              type="button"
+                              className="mt-0 text-sm text-indigo-700 font-medium cursor-pointer hover:text-indigo-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                              onClick={handleGetOTP}
+                              disabled={isLoading}
+                            >
                               Resend OTP
-                            </span>
+                            </button>
                           )}
                         </div>
                       )}
@@ -592,7 +563,12 @@ export default function AnimatedLoginForm() {
                             placeholder="Enter your Card id"
                             className="pl-10"
                             value={formData.cardId}
-                            onChange={(e) => setFormData({ ...formData, cardId: e.target.value })}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                cardId: e.target.value,
+                              })
+                            }
                             required
                           />
                         </div>
@@ -633,8 +609,6 @@ export default function AnimatedLoginForm() {
                         <p className="text-xs text-gray-500 mt-1">Your password is the last 6 digits of your Card ID</p>
                       </div>
 
-                      {/* Hidden reCAPTCHA container */}
-                      <div id="recaptcha-container"></div>
                       <button
                         type="submit"
                         className="w-full bg-transparent flex items-center justify-center text-gray-700 border-2 hover:border-none hover:bg-indigo-600 hover:text-white border-gray-300 py-2 rounded-lg"

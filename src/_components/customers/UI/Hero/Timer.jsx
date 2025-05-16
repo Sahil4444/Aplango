@@ -1,38 +1,39 @@
-"use client";
+"use client"
 
-import { useState, useEffect } from "react";
+import { useState, useEffect } from "react"
 
-export function Timer({ duration, onExpire }) {
-  const [timeLeft, setTimeLeft] = useState(duration);
+export function Timer({ initialSeconds, onExpire }) {
+  const [seconds, setSeconds] = useState(initialSeconds || 0)
 
   useEffect(() => {
-    const startTime = Date.now();
-    const endTime = startTime + duration * 1000;
+    if (seconds <= 0) {
+      onExpire()
+      return
+    }
 
     const interval = setInterval(() => {
-      const now = Date.now();
-      const remaining = Math.max(0, Math.floor((endTime - now) / 1000));
+      setSeconds((prevSeconds) => {
+        if (prevSeconds <= 1) {
+          clearInterval(interval)
+          onExpire()
+          return 0
+        }
+        return prevSeconds - 1
+      })
+    }, 1000)
 
-      setTimeLeft(remaining);
+    return () => clearInterval(interval)
+  }, [seconds, onExpire])
 
-      if (remaining === 0) {
-        clearInterval(interval);
-        onExpire();
-      }
-    }, 1000);
+  const formatTime = () => {
+    const hours = Math.floor(seconds / 3600)
+    const minutes = Math.floor((seconds % 3600) / 60)
+    const remainingSeconds = seconds % 60
 
-    return () => clearInterval(interval);
-  }, [duration, onExpire]);
+    const pad = (num) => num.toString().padStart(2, "0")
 
-  const hours = Math.floor(timeLeft / 3600);
-  const minutes = Math.floor((timeLeft % 3600) / 60);
-  const seconds = timeLeft % 60;
+    return `${pad(hours)}:${pad(minutes)}:${pad(remainingSeconds)}`
+  }
 
-  return (
-    <span className="font-mono">
-      {`${hours.toString().padStart(2, "0")}:${minutes
-        .toString()
-        .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`}
-    </span>
-  );
+  return <span>Expires in {formatTime()}</span>
 }
