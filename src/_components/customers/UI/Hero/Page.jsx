@@ -33,126 +33,189 @@ import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { PulseLoader } from "react-spinners";
 
 const OFFERS = {
-  Imagica: [
+  SinhgadFarm: [
     {
-      id: "imagica-1",
-      name: "Imagica",
-      title: "30% Off on All Items",
-      description:
-        "Enjoy a massive 30% discount on all Imagica products this season. Whether it's merchandise, food, or attractions, save big on your visit!",
+      id: "SinhgadFarm-1",
+      name: "SinhgadFarm",
+      title: "Buy 1 Get 1 Day Package",
     },
     {
-      id: "imagica-2",
-      name: "Imagica",
-      title: "Buy 2 Get 1 Free",
-      description:
-        "Grab any two items and get a third one absolutely free. This limited-time offer is perfect for families and groups looking to make the most of their Imagica experience!",
+      id: "SinhgadFarm-2",
+      name: "SinhgadFarm",
+      title: "Buy 1 Get 1 Day Package",
     },
     {
-      id: "imagica-3",
-      name: "Imagica",
-      title: "Student Discount 20%",
-      description:
-        "Students can enjoy a special 20% discount on tickets and select items by showing a valid student ID. Don't miss out on this budget-friendly way to have fun!",
+      id: "SinhgadFarm-3",
+      name: "SinhgadFarm",
+      title: "Buy 1 Get 1 Day Package",
     },
     {
-      id: "imagica-4",
-      name: "Imagica",
-      title: "Family Package Deal",
-      description:
-        "Book tickets for four or more family members and get a 40% discount on your total purchase. Spend quality time with your loved ones at an unbeatable price!",
+      id: "SinhgadFarm-4",
+      name: "SinhgadFarm",
+      title: "Buy 1 Get 1 Day Package",
     },
+    {
+      id: "SinhgadFarm-5",
+      name: "SinhgadFarm",
+      title: "Buy 2 Get 1 Day Package",
+    },
+    {
+      id: "SinhgadFarm-6",
+      name: "SinhgadFarm",
+      title: "Buy 2 Get 1 Day Package",
+    },
+    {
+      id: "SinhgadFarm-7",
+      name: "SinhgadFarm",
+      title: "Buy 2 Get 1 Day Package",
+    },
+    {
+      id: "SinhgadFarm-8",
+      name: "SinhgadFarm",
+      title: "Buy 2 Get 1 Day Package",
+    },
+    {
+      id: "SinhgadFarm-9",
+      name: "SinhgadFarm",
+      title: "Flat 35% discount on 10 person",
+    },
+    {
+      id: "SinhgadFarm-10",
+      name: "SinhgadFarm",
+      title: "Flat 35% discount on 10 person",
+    },
+    {
+      id: "SinhgadFarm-11",
+      name: "SinhgadFarm",
+      title: "Flat 35% discount on 10 person",
+    },
+    {
+      id: "SinhgadFarm-12",
+      name: "SinhgadFarm",
+      title: "Flat 35% discount on 10 person",
+    },
+    
   ],
-  Habib: [
-    {
-      id: "habib-1",
-      name: "Habib",
-      title: "Buy 1 Get 1 Free",
-      description:
-        "Shop your favorite jewelry pieces and get a second one for free. This special weekend deal applies to selected items, making it the perfect time to add to your collection!",
-    },
-    {
-      id: "habib-2",
-      name: "Habib",
-      title: "50% Off on Jewelry",
-      description:
-        "Get 50% off on our exclusive jewelry collection, featuring stunning gold and silver pieces. Elevate your style with timeless accessories at half the price!",
-    },
-    {
-      id: "habib-3",
-      name: "Habib",
-      title: "Diamond Collection Sale",
-      description:
-        "Enjoy up to 30% off on our exquisite diamond collection. Whether you're looking for engagement rings or elegant necklaces, now is the perfect time to buy!",
-    },
-    {
-      id: "habib-4",
-      name: "Habib",
-      title: "Free Gift on Purchase",
-      description:
-        "Receive a free luxury gift when you spend $500 or more at Habib. A perfect way to treat yourself or surprise a loved one with something extra!",
-    },
-  ],
-  Splash: [
-    {
-      id: "splash-1",
-      name: "Splash",
-      title: "Flat 50% Off",
-      description:
-        "Shop your favorite fashion pieces at half price during our massive clearance sale. Don't miss this chance to upgrade your wardrobe with trendy outfits!",
-    },
-    {
-      id: "splash-2",
-      name: "Splash",
-      title: "New Arrival Discount",
-      description:
-        "Get 25% off on the latest winter collection, featuring stylish jackets, sweaters, and accessories. Stay cozy and fashionable this season!",
-    },
-    {
-      id: "splash-3",
-      name: "Splash",
-      title: "Bundle Offer",
-      description:
-        "Buy any 3 items from our collection and enjoy a 40% discount on your total purchase. Mix and match your favorite styles while saving big!",
-    },
-    {
-      id: "splash-4",
-      name: "Splash",
-      title: "Premium Collection Deal",
-      description:
-        "Save up to 35% on our premium brands, featuring high-quality fabrics and exclusive designs. Elevate your fashion game without breaking the bank!",
-    },
-  ],
-  Suzuki: [
-    {
-      id: "suzuki-1",
-      name: "Suzuki",
-      title: "Free Service Check",
-      description:
-        "Get a complimentary vehicle inspection and basic service to ensure your car is running smoothly. Our experts will check essential components and provide recommendations!",
-    },
-    {
-      id: "suzuki-2",
-      name: "Suzuki",
-      title: "Oil Change Offer",
-      description:
-        "Enjoy a 50% discount on your next oil change and keep your engine running at peak performance. This offer ensures long-lasting protection for your vehicle!",
-    },
-    {
-      id: "suzuki-3",
-      name: "Suzuki",
-      title: "Spare Parts Discount",
-      description:
-        "Save 20% on genuine Suzuki spare parts, ensuring the best quality and durability for your vehicle. Keep your car in top condition at a lower cost!",
-    },
-    {
-      id: "suzuki-4",
-      name: "Suzuki",
-      title: "Winter Service Package",
-      description:
-        "Prepare your car for winter with our special service package, including battery checks, tire inspections, and antifreeze top-ups at exclusive rates!",
-    },
-  ],
+  // Imagica: [
+  //   {
+  //     id: "imagica-1",
+  //     name: "Imagica",
+  //     title: "30% Off on All Items",
+  //     description:
+  //       "Enjoy a massive 30% discount on all Imagica products this season. Whether it's merchandise, food, or attractions, save big on your visit!",
+  //   },
+  //   {
+  //     id: "imagica-2",
+  //     name: "Imagica",
+  //     title: "Buy 2 Get 1 Free",
+  //     description:
+  //       "Grab any two items and get a third one absolutely free. This limited-time offer is perfect for families and groups looking to make the most of their Imagica experience!",
+  //   },
+  //   {
+  //     id: "imagica-3",
+  //     name: "Imagica",
+  //     title: "Student Discount 20%",
+  //     description:
+  //       "Students can enjoy a special 20% discount on tickets and select items by showing a valid student ID. Don't miss out on this budget-friendly way to have fun!",
+  //   },
+  //   {
+  //     id: "imagica-4",
+  //     name: "Imagica",
+  //     title: "Family Package Deal",
+  //     description:
+  //       "Book tickets for four or more family members and get a 40% discount on your total purchase. Spend quality time with your loved ones at an unbeatable price!",
+  //   },
+  // ],
+  // Habib: [
+  //   {
+  //     id: "habib-1",
+  //     name: "Habib",
+  //     title: "Buy 1 Get 1 Free",
+  //     description:
+  //       "Shop your favorite jewelry pieces and get a second one for free. This special weekend deal applies to selected items, making it the perfect time to add to your collection!",
+  //   },
+  //   {
+  //     id: "habib-2",
+  //     name: "Habib",
+  //     title: "50% Off on Jewelry",
+  //     description:
+  //       "Get 50% off on our exclusive jewelry collection, featuring stunning gold and silver pieces. Elevate your style with timeless accessories at half the price!",
+  //   },
+  //   {
+  //     id: "habib-3",
+  //     name: "Habib",
+  //     title: "Diamond Collection Sale",
+  //     description:
+  //       "Enjoy up to 30% off on our exquisite diamond collection. Whether you're looking for engagement rings or elegant necklaces, now is the perfect time to buy!",
+  //   },
+  //   {
+  //     id: "habib-4",
+  //     name: "Habib",
+  //     title: "Free Gift on Purchase",
+  //     description:
+  //       "Receive a free luxury gift when you spend $500 or more at Habib. A perfect way to treat yourself or surprise a loved one with something extra!",
+  //   },
+  // ],
+  // Splash: [
+  //   {
+  //     id: "splash-1",
+  //     name: "Splash",
+  //     title: "Flat 50% Off",
+  //     description:
+  //       "Shop your favorite fashion pieces at half price during our massive clearance sale. Don't miss this chance to upgrade your wardrobe with trendy outfits!",
+  //   },
+  //   {
+  //     id: "splash-2",
+  //     name: "Splash",
+  //     title: "New Arrival Discount",
+  //     description:
+  //       "Get 25% off on the latest winter collection, featuring stylish jackets, sweaters, and accessories. Stay cozy and fashionable this season!",
+  //   },
+  //   {
+  //     id: "splash-3",
+  //     name: "Splash",
+  //     title: "Bundle Offer",
+  //     description:
+  //       "Buy any 3 items from our collection and enjoy a 40% discount on your total purchase. Mix and match your favorite styles while saving big!",
+  //   },
+  //   {
+  //     id: "splash-4",
+  //     name: "Splash",
+  //     title: "Premium Collection Deal",
+  //     description:
+  //       "Save up to 35% on our premium brands, featuring high-quality fabrics and exclusive designs. Elevate your fashion game without breaking the bank!",
+  //   },
+  // ],
+  // Suzuki: [
+  //   {
+  //     id: "suzuki-1",
+  //     name: "Suzuki",
+  //     title: "Free Service Check",
+  //     description:
+  //       "Get a complimentary vehicle inspection and basic service to ensure your car is running smoothly. Our experts will check essential components and provide recommendations!",
+  //   },
+  //   {
+  //     id: "suzuki-2",
+  //     name: "Suzuki",
+  //     title: "Oil Change Offer",
+  //     description:
+  //       "Enjoy a 50% discount on your next oil change and keep your engine running at peak performance. This offer ensures long-lasting protection for your vehicle!",
+  //   },
+  //   {
+  //     id: "suzuki-3",
+  //     name: "Suzuki",
+  //     title: "Spare Parts Discount",
+  //     description:
+  //       "Save 20% on genuine Suzuki spare parts, ensuring the best quality and durability for your vehicle. Keep your car in top condition at a lower cost!",
+  //   },
+  //   {
+  //     id: "suzuki-4",
+  //     name: "Suzuki",
+  //     title: "Winter Service Package",
+  //     description:
+  //       "Prepare your car for winter with our special service package, including battery checks, tire inspections, and antifreeze top-ups at exclusive rates!",
+  //   },
+  // ],
 };
 
 // const override = {
@@ -276,7 +339,6 @@ export default function OffersPage() {
         to_email: userData.email || currentUser.email,
         to_name: userName,
         offer_name: selectedOffer.title,
-        offer_description: selectedOffer.description,
         brand_name: selectedOffer.name,
       };
 
@@ -361,7 +423,7 @@ export default function OffersPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 pt-48 md:py-8">
+    <div className="container mx-auto px-4 pt-20 md:pt-24">
       <h1 className="text-3xl md:text-6xl font-bold text-center text-indigo-600 mb-6">
         Offers for you
       </h1>
@@ -376,16 +438,17 @@ export default function OffersPage() {
             <SelectValue placeholder="Select brand or shop" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="Imagica">Imagica</SelectItem>
+            <SelectItem value="SinhgadFarm">SinhgadFarm</SelectItem>
+            {/* <SelectItem value="Imagica">Imagica</SelectItem>
             <SelectItem value="Habib">Habib</SelectItem>
             <SelectItem value="Splash">Splash</SelectItem>
-            <SelectItem value="Suzuki">Suzuki</SelectItem>
+            <SelectItem value="Suzuki">Suzuki</SelectItem> */}
           </SelectContent>
         </Select>
       </div>
 
       {selectedBrand && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-2">
           {OFFERS[selectedBrand].map((offer) => (
             <OfferCard
               key={offer.id}
@@ -418,44 +481,29 @@ export default function OffersPage() {
             </p>
             <ol className="list-decimal pl-5 space-y-2 text-sm">
               <li>
-                This offer is valid for a single use only and cannot be combined
-                with other promotions.
+                Guest has to make resevation 2days prior from his/her arrival date.
               </li>
               <li>
-                Once redeemed, the offer will expire after 8 hours and cannot be
-                reactivated.
+                Applicable for every Saturday and Sunday except special days like new year ,diwali,Christmas,valentine day or any other event as decided by the resort .
               </li>
               <li>
-                The offer is non-transferable and can only be used by the
-                account holder.
+                All rights reserved with Sinhagad farms.
               </li>
               <li>
-                Redemption is subject to availability and may be declined at the
-                discretion of the merchant.
+                Offer Valid till 30th October 2026.
               </li>
               <li>
-                The merchant reserves the right to modify or cancel the offer at
-                any time without prior notice.
+                For Booking Contact: 7767004656. 
               </li>
               <li>
-                Any disputes regarding the offer will be resolved at the sole
-                discretion of the merchant.
+                This offer also applicable for Half day picnic.
               </li>
               <li>
-                Personal information collected during redemption may be used for
-                marketing purposes in accordance with our privacy policy.
+                If any dispute between vendor & customer, Sinhgad Resort’s management will be final.
               </li>
               <li>
                 By redeeming this offer, you consent to receive promotional
                 emails related to similar offers.
-              </li>
-              <li>
-                The offer cannot be exchanged for cash or other
-                products/services not specified in the offer.
-              </li>
-              <li>
-                Additional terms and conditions may apply based on the specific
-                offer and merchant policies.
               </li>
             </ol>
           </div>
@@ -505,9 +553,6 @@ function OfferCard({
         </CardTitle>
         <CardTitle className="text-lg">{offer.title}</CardTitle>
       </CardHeader>
-      <CardContent>
-        <p className="text-sm text-muted-foreground">{offer.description}</p>
-      </CardContent>
       <CardFooter className="mt-auto">
         <Button
           className="w-full"

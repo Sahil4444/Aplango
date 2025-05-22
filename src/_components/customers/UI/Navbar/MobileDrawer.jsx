@@ -75,7 +75,7 @@ const MobileDrawer = ({ isOpen, setIsOpen }) => {
 
   return (
     <div
-      className={`md:hidden ${
+      className={`lg:hidden ${
         isOpen ? "block" : "hidden"
       } bg-white w-full h-full`}
     >

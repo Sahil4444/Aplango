@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ChevronsUpDown, Trash2 } from "lucide-react";
@@ -15,6 +16,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 function Offers() {
+  const navigate = useNavigate();
+
   const coupons = [
     {
       id: 1,
@@ -152,6 +155,11 @@ function Offers() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredCoupons, setFilteredCoupons] = useState(coupons);
 
+  const handleOfferRegister = () => {
+    const path = `/Aplango/admin/couponregister`;
+    navigate(path);
+  };
+
   const toggleBrand = (brand) => {
     setSelectedBrands((prev) =>
       prev.includes(brand) ? prev.filter((b) => b !== brand) : [...prev, brand]
@@ -189,11 +197,6 @@ function Offers() {
       </div>
       <div className="content shadow-lg mt-10 px-5 py-10 w-full">
         <div className="w-full">
-          <div className="add-section mx-auto w-36">
-            <button className="text-md font-semibold bg-indigo-500 md:bg-transparent text-white md:text-indigo-500 md:border md:border-indigo-500 py-2 w-full rounded-md md:hover:bg-indigo-500 md:hover:text-white">
-              Add Coupon
-            </button>
-          </div>
           <div className="coupons mt-14">
             <div className="heading text-center mb-8">
               <h1 className="text-lg font-bold">Available Coupons</h1>
@@ -368,6 +371,11 @@ function Offers() {
             </div>
           </div>
         </div>
+      </div>
+      <div className="add-section mx-auto w-36 mt-4">
+        <button onClick={handleOfferRegister} className="text-md font-semibold bg-indigo-500 md:bg-transparent text-white md:text-indigo-500 md:border md:border-indigo-500 py-2 w-full rounded-md md:hover:bg-indigo-500 md:hover:text-white">
+          Add Coupon
+        </button>
       </div>
     </div>
   );

@@ -51,24 +51,24 @@ const Navbar = () => {
     }
   };
 
-  const handleUiClick = (event) => {
-    event.preventDefault(); // Prevent default anchor behavior
+  // const handleUiClick = (event) => {
+  //   event.preventDefault(); // Prevent default anchor behavior
 
-    if (location.pathname === "/Aplango/ui") {
-      setIsOpen(false);
-      window.scroll({
-        top: 0, // Scroll vertically to 100 pixels
-        left: 0, // Don't change horizontal position
-        behavior: "smooth", // Smooth scroll
-      }); // Delay to allow page transition
-    } else {
-      setIsOpen(false);
-      navigate("/Aplango/ui"); // Redirect to home
-      setTimeout(() => {
-        window.scrollTo({ top: 0, behavior: "smooth" }); // Scroll down smoothly
-      }, 100); // Normal About Us navigation
-    }
-  };
+  //   if (location.pathname === "/Aplango/ui") {
+  //     setIsOpen(false);
+  //     window.scroll({
+  //       top: 0, // Scroll vertically to 100 pixels
+  //       left: 0, // Don't change horizontal position
+  //       behavior: "smooth", // Smooth scroll
+  //     }); // Delay to allow page transition
+  //   } else {
+  //     setIsOpen(false);
+  //     navigate("/Aplango/ui"); // Redirect to home
+  //     setTimeout(() => {
+  //       window.scrollTo({ top: 0, behavior: "smooth" }); // Scroll down smoothly
+  //     }, 100); // Normal About Us navigation
+  //   }
+  // };
 
   const handleScrollContact = (event) => {
     event.preventDefault(); // Prevent default anchor behavior
@@ -161,7 +161,7 @@ const Navbar = () => {
                   className="absolute origin-left -bottom-1 -left-2 -right-2 h-1 rounded-full bg-indigo-600 transition-transform duration-300 ease-out"
                 ></span>
               </Link>
-              <Link
+              {/* <Link
                 onClick={handleUiClick}
                 onMouseEnter={() => setIsUiOpen(true)}
                 onMouseLeave={() => setIsUiOpen(false)}
@@ -174,7 +174,7 @@ const Navbar = () => {
                   }}
                   className="absolute origin-left -bottom-1 -left-2 -right-2 h-1 rounded-full bg-indigo-600 transition-transform duration-300 ease-out"
                 ></span>
-              </Link>
+              </Link> */}
               <Link
                 onClick={handleScrollContact}
                 onMouseEnter={() => setIsContactOpen(true)}

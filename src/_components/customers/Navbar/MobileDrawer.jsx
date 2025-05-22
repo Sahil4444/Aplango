@@ -100,24 +100,24 @@ const MobileDrawer = ({ isOpen, setIsOpen }) => {
     }
   };
 
-  const handleUiClick = (event) => {
-    event.preventDefault(); // Prevent default anchor behavior
+  // const handleUiClick = (event) => {
+  //   event.preventDefault(); // Prevent default anchor behavior
 
-    if (location.pathname === "/Aplango/ui") {
-      setIsOpen(false);
-      window.scroll({
-        top: 0, // Scroll vertically to 100 pixels
-        left: 0, // Don't change horizontal position
-        behavior: "smooth", // Smooth scroll
-      }); // Delay to allow page transition
-    } else {
-      setIsOpen(false);
-      navigate("/Aplango/ui"); // Redirect to home
-      setTimeout(() => {
-        window.scrollTo({ top: 0, behavior: "smooth" }); // Scroll down smoothly
-      }, 100); // Normal About Us navigation
-    }
-  };
+  //   if (location.pathname === "/Aplango/ui") {
+  //     setIsOpen(false);
+  //     window.scroll({
+  //       top: 0, // Scroll vertically to 100 pixels
+  //       left: 0, // Don't change horizontal position
+  //       behavior: "smooth", // Smooth scroll
+  //     }); // Delay to allow page transition
+  //   } else {
+  //     setIsOpen(false);
+  //     navigate("/Aplango/ui"); // Redirect to home
+  //     setTimeout(() => {
+  //       window.scrollTo({ top: 0, behavior: "smooth" }); // Scroll down smoothly
+  //     }, 100); // Normal About Us navigation
+  //   }
+  // };
 
   return (
     <div
@@ -144,12 +144,12 @@ const MobileDrawer = ({ isOpen, setIsOpen }) => {
         >
           About
         </Link>
-        <Link
+        {/* <Link
           onClick={handleUiClick}
           className="text-black hover:text-gray-600 block px-3 py-2 rounded-md text-base font-medium"
         >
           Ui
-        </Link>
+        </Link> */}
         <Link
           onClick={handleScrollContact}
           className="text-black hover:text-gray-600 block px-3 py-2 rounded-md text-base font-medium"

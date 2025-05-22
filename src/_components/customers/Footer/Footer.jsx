@@ -3,11 +3,13 @@ import logo from "../../../assets/logo.png";
 import {
   Facebook,
   Instagram,
+  Linkedin,
   Mail,
   MapPin,
   Phone,
   Twitter,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 function Footer() {
   const links = [
@@ -29,9 +31,7 @@ function Footer() {
     },
   ];
 
-  const presence = [
-    { country: "India", email: "ind@aplango.in" },
-  ];
+  const presence = [{ country: "India", email: "info@aplango.com" }];
 
   const policies = [
     "Privacy Policy",
@@ -107,7 +107,7 @@ function Footer() {
             <div className="space-y-4">
               <div className="flex items-start space-x-2">
                 <Mail className="w-5 h-5 text-indigo-600 mt-0" />
-                <p className="text-gray-600 text-sm">relationship@aplango.in</p>
+                <p className="text-gray-600 text-sm">info@aplango.com</p>
               </div>
               <div className="flex items-start space-x-2">
                 <Phone className="w-5 h-5 text-indigo-600 mt-1" />
@@ -116,7 +116,7 @@ function Footer() {
               <div className="flex items-start space-x-2">
                 <MapPin className="w-5 h-7 text-indigo-600 mt-1" />
                 <p className="text-gray-600 text-sm">
-                  316 Woodrow, Veera Desai Rd, Andheri(W), Mumbai - 53
+                  Ambiance tower, Vasant kunj,New Delhi - 110070
                 </p>
               </div>
 
@@ -143,7 +143,10 @@ function Footer() {
                   FOLLOW US ON
                 </h3>
                 <div className="flex space-x-4">
-                  <a href="/" className="text-gray-600 hover:text-indigo-600">
+                  <Link to="https://www.linkedin.com/company/aplango-promos-pvt-ltd/posts/?feedView=all" target="/blank" className="text-gray-600 hover:text-indigo-600">
+                    <Linkedin className="w-6 h-6" />
+                  </Link>
+                  {/* <a href="/" className="text-gray-600 hover:text-indigo-600">
                     <Facebook className="w-6 h-6" />
                   </a>
                   <a href="/" className="text-gray-600 hover:text-indigo-600">
@@ -152,6 +155,9 @@ function Footer() {
                   <a href="/" className="text-gray-600 hover:text-indigo-600">
                     <Twitter className="w-6 h-6" />
                   </a>
+                  <a href="/" className="text-gray-600 hover:text-indigo-600">
+                    <Linkedin className="w-6 h-6" />
+                  </a> */}
                 </div>
               </div>
             </div>

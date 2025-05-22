@@ -131,7 +131,7 @@ const Navbar = () => {
             <Logo />
           </Link>
 
-          <div className="hidden md:block ml-10">
+          <div className="hidden md:block ml-24">
             <div className="flex items-baseline justify-between gap-5 space-x-4">
               <Link
                 to="/Aplango/ui"

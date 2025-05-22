@@ -22,6 +22,7 @@ import CardRegister from "./_components/admin/Pages/CardRegister";
 import BrandRegister from "./_components/admin/Pages/BrandRegister";
 import Offers from "./_components/admin/Pages/Offers";
 import AdminLogin from "./_components/admin/Pages/AdminLogin";
+import CouponRegister from "./_components/admin/Pages/CouponRegister";
 
 const router = createBrowserRouter([
   {
@@ -109,6 +110,10 @@ const router = createBrowserRouter([
       {
         path: "brandregister",
         element: <BrandRegister />,
+      },
+      {
+        path: "couponregister",
+        element: <CouponRegister />,
       },
     ],
   },
