@@ -10,7 +10,7 @@ function Hero() {
 
   const handleLoginClick = (event) => {
     event.preventDefault(); // Prevent default anchor behavior
-    navigate("/Aplango/login"); // Redirect to home
+    navigate("/login"); // Redirect to home
     setTimeout(() => {
       window.scrollTo({ top: 0, behavior: "smooth" }); // Scroll down smoothly
     }, 100); // Normal About Us navigation
@@ -18,7 +18,7 @@ function Hero() {
 
   const handleScrollLogin = (event) => {
     event.preventDefault(); // Prevent default anchor behavior
-    navigate("/Aplango/ui"); // Redirect to home
+    navigate("/ui"); // Redirect to home
     setTimeout(() => {
       window.scrollTo({ top: 650, behavior: "smooth" }); // Scroll down smoothly
     }, 100); // Normal About Us navigation

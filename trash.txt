@@ -139,3 +139,127 @@ function AdminLogin() {
 }
 
 export default AdminLogin;
+
+
+
+
+// Imagica: [
+//   {
+//     id: "imagica-1",
+//     name: "Imagica",
+//     title: "30% Off on All Items",
+//     description:
+//       "Enjoy a massive 30% discount on all Imagica products this season. Whether it's merchandise, food, or attractions, save big on your visit!",
+//   },
+//   {
+//     id: "imagica-2",
+//     name: "Imagica",
+//     title: "Buy 2 Get 1 Free",
+//     description:
+//       "Grab any two items and get a third one absolutely free. This limited-time offer is perfect for families and groups looking to make the most of their Imagica experience!",
+//   },
+//   {
+//     id: "imagica-3",
+//     name: "Imagica",
+//     title: "Student Discount 20%",
+//     description:
+//       "Students can enjoy a special 20% discount on tickets and select items by showing a valid student ID. Don't miss out on this budget-friendly way to have fun!",
+//   },
+//   {
+//     id: "imagica-4",
+//     name: "Imagica",
+//     title: "Family Package Deal",
+//     description:
+//       "Book tickets for four or more family members and get a 40% discount on your total purchase. Spend quality time with your loved ones at an unbeatable price!",
+//   },
+// ],
+// Habib: [
+//   {
+//     id: "habib-1",
+//     name: "Habib",
+//     title: "Buy 1 Get 1 Free",
+//     description:
+//       "Shop your favorite jewelry pieces and get a second one for free. This special weekend deal applies to selected items, making it the perfect time to add to your collection!",
+//   },
+//   {
+//     id: "habib-2",
+//     name: "Habib",
+//     title: "50% Off on Jewelry",
+//     description:
+//       "Get 50% off on our exclusive jewelry collection, featuring stunning gold and silver pieces. Elevate your style with timeless accessories at half the price!",
+//   },
+//   {
+//     id: "habib-3",
+//     name: "Habib",
+//     title: "Diamond Collection Sale",
+//     description:
+//       "Enjoy up to 30% off on our exquisite diamond collection. Whether you're looking for engagement rings or elegant necklaces, now is the perfect time to buy!",
+//   },
+//   {
+//     id: "habib-4",
+//     name: "Habib",
+//     title: "Free Gift on Purchase",
+//     description:
+//       "Receive a free luxury gift when you spend $500 or more at Habib. A perfect way to treat yourself or surprise a loved one with something extra!",
+//   },
+// ],
+// Splash: [
+//   {
+//     id: "splash-1",
+//     name: "Splash",
+//     title: "Flat 50% Off",
+//     description:
+//       "Shop your favorite fashion pieces at half price during our massive clearance sale. Don't miss this chance to upgrade your wardrobe with trendy outfits!",
+//   },
+//   {
+//     id: "splash-2",
+//     name: "Splash",
+//     title: "New Arrival Discount",
+//     description:
+//       "Get 25% off on the latest winter collection, featuring stylish jackets, sweaters, and accessories. Stay cozy and fashionable this season!",
+//   },
+//   {
+//     id: "splash-3",
+//     name: "Splash",
+//     title: "Bundle Offer",
+//     description:
+//       "Buy any 3 items from our collection and enjoy a 40% discount on your total purchase. Mix and match your favorite styles while saving big!",
+//   },
+//   {
+//     id: "splash-4",
+//     name: "Splash",
+//     title: "Premium Collection Deal",
+//     description:
+//       "Save up to 35% on our premium brands, featuring high-quality fabrics and exclusive designs. Elevate your fashion game without breaking the bank!",
+//   },
+// ],
+// Suzuki: [
+//   {
+//     id: "suzuki-1",
+//     name: "Suzuki",
+//     title: "Free Service Check",
+//     description:
+//       "Get a complimentary vehicle inspection and basic service to ensure your car is running smoothly. Our experts will check essential components and provide recommendations!",
+//   },
+//   {
+//     id: "suzuki-2",
+//     name: "Suzuki",
+//     title: "Oil Change Offer",
+//     description:
+//       "Enjoy a 50% discount on your next oil change and keep your engine running at peak performance. This offer ensures long-lasting protection for your vehicle!",
+//   },
+//   {
+//     id: "suzuki-3",
+//     name: "Suzuki",
+//     title: "Spare Parts Discount",
+//     description:
+//       "Save 20% on genuine Suzuki spare parts, ensuring the best quality and durability for your vehicle. Keep your car in top condition at a lower cost!",
+//   },
+//   {
+//     id: "suzuki-4",
+//     name: "Suzuki",
+//     title: "Winter Service Package",
+//     description:
+//       "Prepare your car for winter with our special service package, including battery checks, tire inspections, and antifreeze top-ups at exclusive rates!",
+//   },
+// ],

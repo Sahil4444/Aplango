@@ -26,15 +26,15 @@ import CouponRegister from "./_components/admin/Pages/CouponRegister";
 
 const router = createBrowserRouter([
   {
-    path: "/Aplango/",
+    path: "/",
     element: <Home />,
   },
   {
-    path: "/Aplango/login",
+    path: "/login",
     element: <AnimatedLoginForm />,
   },
   {
-    path: "/Aplango/ui/",
+    path: "/ui/",
     element: <UiHome />,
     children: [
       {
@@ -52,11 +52,11 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: "/Aplango/admin/login",
+    path: "/admin/login",
     element: <AdminLogin />,
   },
   {
-    path: "/Aplango/admin/",
+    path: "/admin/",
     element: <PagesLayout />,
     children: [
       {

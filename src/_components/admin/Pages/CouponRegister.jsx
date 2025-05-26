@@ -110,7 +110,7 @@ function CouponRegister() {
                 <Input
                   id="title"
                   name="title"
-                  placeholder="Enter coupon title"
+                  placeholder="Enter brand name"
                   value={couponData.title}
                   onChange={handleChange}
                   className="w-full"

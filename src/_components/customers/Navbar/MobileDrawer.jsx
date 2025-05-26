@@ -12,10 +12,10 @@ const MobileDrawer = ({ isOpen, setIsOpen }) => {
   const handleProductsClick = (event) => {
     event.preventDefault(); // Prevent default anchor behavior
 
-    if (location.pathname === "/Aplango") {
+    if (location.pathname === "/") {
       event.preventDefault();
       setIsOpen(false);
-      navigate("/Aplango/");
+      navigate("/");
       window.scroll({
         top: 620, // Scroll vertically to 100 pixels
         left: 0, // Don't change horizontal position
@@ -24,8 +24,8 @@ const MobileDrawer = ({ isOpen, setIsOpen }) => {
     } else {
       event.preventDefault();
       setIsOpen(false);
-      navigate("/Aplango/");
-      navigate("/Aplango/"); // Redirect to home
+      navigate("/");
+      navigate("/"); // Redirect to home
       setTimeout(() => {
         window.scrollTo({ top: 620, behavior: "smooth" }); // Scroll down smoothly
       }, 100); // Normal About Us navigation
@@ -35,7 +35,7 @@ const MobileDrawer = ({ isOpen, setIsOpen }) => {
   const handleScrollContact = (event) => {
     event.preventDefault(); // Prevent default anchor behavior
 
-    if (location.pathname === "/Aplango/") {
+    if (location.pathname === "/") {
       setIsOpen(false);
       window.scroll({
         top: 5230, // Scroll vertically to 100 pixels
@@ -44,7 +44,7 @@ const MobileDrawer = ({ isOpen, setIsOpen }) => {
       }); // Delay to allow page transition
     } else {
       setIsOpen(false);
-      navigate("/Aplango/"); // Redirect to home
+      navigate("/"); // Redirect to home
       setTimeout(() => {
         window.scrollTo({ top: 5230, behavior: "smooth" }); // Scroll down smoothly
       }, 100); // Normal About Us navigation
@@ -54,7 +54,7 @@ const MobileDrawer = ({ isOpen, setIsOpen }) => {
   const handleScrollHome = (event) => {
     event.preventDefault();
     setIsOpen(false);
-    navigate("/Aplango/");
+    navigate("/");
     window.scroll({
       top: 0, // Scroll vertically to 100 pixels
       left: 0, // Don't change horizontal position
@@ -65,7 +65,7 @@ const MobileDrawer = ({ isOpen, setIsOpen }) => {
   const handleClientsHome = (event) => {
     event.preventDefault(); // Prevent default anchor behavior
 
-    if (location.pathname === "/Aplango/") {
+    if (location.pathname === "/") {
       setIsOpen(false);
       window.scroll({
         top: 2900, // Scroll vertically to 100 pixels
@@ -74,7 +74,7 @@ const MobileDrawer = ({ isOpen, setIsOpen }) => {
       }); // Delay to allow page transition
     } else {
       setIsOpen(false);
-      navigate("/Aplango/"); // Redirect to home
+      navigate("/"); // Redirect to home
       setTimeout(() => {
         window.scrollTo({ top: 2900, behavior: "smooth" }); // Scroll down smoothly
       }, 100); // Normal About Us navigation
@@ -84,7 +84,7 @@ const MobileDrawer = ({ isOpen, setIsOpen }) => {
   const handleAboutClick = (event) => {
     event.preventDefault(); // Prevent default anchor behavior
 
-    if (location.pathname === "/Aplango/") {
+    if (location.pathname === "/") {
       setIsOpen(false);
       window.scroll({
         top: 3800, // Scroll vertically to 100 pixels
@@ -93,7 +93,7 @@ const MobileDrawer = ({ isOpen, setIsOpen }) => {
       }); // Delay to allow page transition
     } else {
       setIsOpen(false);
-      navigate("/Aplango/"); // Redirect to home
+      navigate("/"); // Redirect to home
       setTimeout(() => {
         window.scrollTo({ top: 3800, behavior: "smooth" }); // Scroll down smoothly
       }, 100); // Normal About Us navigation
@@ -158,7 +158,7 @@ const MobileDrawer = ({ isOpen, setIsOpen }) => {
         </Link>
         <div className="md:hidden flex flex-col gap-3">
           <button
-            onClick={() => navigate("/Aplango/login")}
+            onClick={() => navigate("/login")}
             className="hover:cursor-pointer border border-gray-800 bg-indigo-700 text-white w-full py-2 rounded-md text-sm font-medium mr-2"
           >
             Login

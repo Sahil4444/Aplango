@@ -243,7 +243,7 @@ export default function AnimatedLoginForm() {
           position: "top-center",
         })
       }
-      navigate("/Aplango/ui")
+      navigate("/ui")
     } catch (error) {
       console.error("Authentication error:", error)
       let errorMessage = "Authentication failed. Please try again."

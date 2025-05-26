@@ -14,7 +14,7 @@ const MobileDrawer = ({ isOpen, setIsOpen }) => {
   const handleScrollContact = (event) => {
     event.preventDefault(); // Prevent default anchor behavior
       setIsOpen(false);
-      navigate("/Aplango/ui/contact"); // Redirect to home
+      navigate("/ui/contact"); // Redirect to home
       setTimeout(() => {
         window.scrollTo({ top: 0, behavior: "smooth" }); // Scroll down smoothly
       }, 100); // Normal About Us navigation
@@ -23,7 +23,7 @@ const MobileDrawer = ({ isOpen, setIsOpen }) => {
   const handleScrollHome = (event) => {
     event.preventDefault();
     setIsOpen(false);
-    navigate("/Aplango/ui");
+    navigate("/ui");
     window.scroll({
       top: 0, // Scroll vertically to 100 pixels
       left: 0, // Don't change horizontal position
@@ -34,7 +34,7 @@ const MobileDrawer = ({ isOpen, setIsOpen }) => {
   const handleClientsClick = (event) => {
     event.preventDefault(); // Prevent default anchor behavior
 
-    if (location.pathname === "/Aplango/ui") {
+    if (location.pathname === "/ui") {
       setIsOpen(false);
       window.scroll({
         top: 990, // Scroll vertically to 100 pixels
@@ -43,7 +43,7 @@ const MobileDrawer = ({ isOpen, setIsOpen }) => {
       }); // Delay to allow page transition
     } else {
       setIsOpen(false);
-      navigate("/Aplango/ui"); // Redirect to home
+      navigate("/ui"); // Redirect to home
       setTimeout(() => {
         window.scrollTo({ top: 990, behavior: "smooth" }); // Scroll down smoothly
       }, 100); // Normal About Us navigation
@@ -54,7 +54,7 @@ const MobileDrawer = ({ isOpen, setIsOpen }) => {
     event.preventDefault(); // Prevent default anchor behavior
 
       setIsOpen(false);
-      navigate("/Aplango/ui/about"); // Redirect to home
+      navigate("/ui/about"); // Redirect to home
       setTimeout(() => {
         window.scrollTo({ top: 0, behavior: "smooth" }); // Scroll down smoothly
       }, 100); // Normal About Us navigation
@@ -64,7 +64,7 @@ const MobileDrawer = ({ isOpen, setIsOpen }) => {
   const handleLogout = async () => {
       try {
         await signOut(auth);
-        navigate("/Aplango/")
+        navigate("/")
         toast.success("Logout successful!", { position: "top-center" });
         console.log("User logged out");
       } catch (error) {

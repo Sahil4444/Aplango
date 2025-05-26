@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
+"use client";
+
+import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import Logo from "./Logo";
 import MobileDrawer from "./MobileDrawer";
 import { Link } from "react-router-dom";
 import { useNavigate, useLocation } from "react-router-dom";
-import { signOut } from "firebase/auth";
+import { signOut, onAuthStateChanged } from "firebase/auth";
 import { auth, firestore } from "../../../../../Database/Firebase";
 import { toast } from "react-toastify";
 import { doc, getDoc } from "firebase/firestore";
@@ -16,6 +18,9 @@ const Navbar = () => {
   const [isContactOpen, setIsContactOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [username, setUsername] = useState("");
+  const [currentUser, setCurrentUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -23,14 +28,14 @@ const Navbar = () => {
   const handleClientsClick = (event) => {
     event.preventDefault(); // Prevent default anchor behavior
 
-    if (location.pathname === "/Aplango/ui") {
+    if (location.pathname === "/ui") {
       window.scroll({
         top: 680, // Scroll vertically to 100 pixels
         left: 0, // Don't change horizontal position
         behavior: "smooth", // Smooth scroll
       }); // Delay to allow page transition
     } else {
-      navigate("/Aplango/ui"); // Redirect to home
+      navigate("/ui"); // Redirect to home
       setTimeout(() => {
         window.scrollTo({ top: 680, behavior: "smooth" }); // Scroll down smoothly
       }, 100); // Normal About Us navigation
@@ -40,7 +45,7 @@ const Navbar = () => {
   const handleAboutClick = (event) => {
     event.preventDefault(); // Prevent default anchor behavior
 
-    navigate("/Aplango/ui/about"); // Redirect to home
+    navigate("/ui/about"); // Redirect to home
     setTimeout(() => {
       window.scrollTo({ top: 0, behavior: "smooth" }); // Scroll down smoothly
     }, 100); // Normal About Us navigation
@@ -48,7 +53,7 @@ const Navbar = () => {
 
   const handleScrollContact = (event) => {
     event.preventDefault(); // Prevent default anchor behavior
-    navigate("/Aplango/ui/contact"); // Redirect to home
+    navigate("/ui/contact"); // Redirect to home
     setTimeout(() => {
       window.scrollTo({ top: 0, behavior: "smooth" }); // Scroll down smoothly
     }, 100); // Normal About Us navigation
@@ -65,7 +70,7 @@ const Navbar = () => {
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      navigate("/Aplango/");
+      navigate("/");
       toast.success("Logout successful!", { position: "top-center" });
       console.log("User logged out");
     } catch (error) {
@@ -76,10 +81,8 @@ const Navbar = () => {
     }
   };
 
-  const fetchUsername = async () => {
+  const fetchUsername = async (user) => {
     try {
-      const user = auth.currentUser; // Get the currently logged-in user
-
       if (!user) {
         console.log("No user is logged in");
         return null;
@@ -89,16 +92,46 @@ const Navbar = () => {
       const userSnap = await getDoc(userRef);
 
       if (userSnap.exists()) {
-        return userSnap.data().name; // Return the username
+        const userData = userSnap.data();
+        return (
+          userData.name ||
+          userData.displayName ||
+          user.displayName ||
+          user.email?.split("@")[0] ||
+          "User"
+        );
       } else {
-        console.log("User document not found");
-        return null;
+        console.log("User document not found, using fallback");
+        return user.displayName || user.email?.split("@")[0] || "User";
       }
     } catch (error) {
       console.error("Error fetching username:", error);
-      return null;
+      // Fallback to auth user data
+      return user?.displayName || user?.email?.split("@")[0] || "User";
     }
   };
+
+  // Listen to authentication state changes
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      setCurrentUser(user);
+      setLoading(false);
+
+      if (user) {
+        try {
+          const name = await fetchUsername(user);
+          setUsername(name || "");
+        } catch (error) {
+          console.error("Error setting username:", error);
+          setUsername(user.displayName || user.email?.split("@")[0] || "User");
+        }
+      } else {
+        setUsername("");
+      }
+    });
+
+    return () => unsubscribe(); // Cleanup subscription on unmount
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -106,17 +139,6 @@ const Navbar = () => {
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const [username, setUsername] = useState("");
-
-  useEffect(() => {
-    const getUsername = async () => {
-      const name = await fetchUsername();
-      if (name) setUsername(name);
-    };
-
-    getUsername();
   }, []);
 
   return (
@@ -134,7 +156,7 @@ const Navbar = () => {
           <div className="hidden md:block ml-24">
             <div className="flex items-baseline justify-between gap-5 space-x-4">
               <Link
-                to="/Aplango/ui"
+                to="/ui"
                 onClick={handleScrollHome}
                 onMouseEnter={() => setIsHomeOpen(true)}
                 onMouseLeave={() => setIsHomeOpen(false)}
@@ -188,19 +210,36 @@ const Navbar = () => {
               </Link>
             </div>
           </div>
+
           <div className="hidden md:block">
-            <span className="me-3">
-              Welcome,{" "}
-              <span className="text-indigo-500 font-semibold">
-                {username || ""}
-              </span>{" "}
-            </span>
-            <button
-              onClick={handleLogout}
-              className="bg-transparent text-gray-800 hover:cursor-pointer border border-gray-800 hover:bg-indigo-700 hover:text-white w-28 py-2 rounded-md text-sm font-medium mr-2"
-            >
-              Logout
-            </button>
+            {loading ? (
+              <div className="flex items-center">
+                <div className="w-4 h-4 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin mr-2"></div>
+                <span className="text-gray-600">Loading...</span>
+              </div>
+            ) : currentUser ? (
+              <>
+                <span className="me-3">
+                  Welcome,{" "}
+                  <span className="text-indigo-500 font-semibold">
+                    {username}
+                  </span>{" "}
+                </span>
+                <button
+                  onClick={handleLogout}
+                  className="bg-transparent text-gray-800 hover:cursor-pointer border border-gray-800 hover:bg-indigo-700 hover:text-white w-28 py-2 rounded-md text-sm font-medium mr-2"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={() => navigate("/")}
+                className="bg-indigo-600 text-white hover:bg-indigo-700 w-28 py-2 rounded-md text-sm font-medium mr-2"
+              >
+                Login
+              </button>
+            )}
           </div>
 
           <div className="md:hidden">
@@ -217,7 +256,13 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-      <MobileDrawer isOpen={isOpen} setIsOpen={setIsOpen} />
+      <MobileDrawer
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        currentUser={currentUser}
+        username={username}
+        handleLogout={handleLogout}
+      />
     </nav>
   );
 };

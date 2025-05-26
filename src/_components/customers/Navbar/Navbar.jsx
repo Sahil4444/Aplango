@@ -20,14 +20,14 @@ const Navbar = () => {
   const handleClientsClick = (event) => {
     event.preventDefault(); // Prevent default anchor behavior
 
-    if (location.pathname === "/Aplango") {
+    if (location.pathname === "/") {
       window.scroll({
         top: 2200, // Scroll vertically to 100 pixels
         left: 0, // Don't change horizontal position
         behavior: "smooth", // Smooth scroll
       }); // Delay to allow page transition
     } else {
-      navigate("/Aplango/"); // Redirect to home
+      navigate("/"); // Redirect to home
       setTimeout(() => {
         window.scrollTo({ top: 2200, behavior: "smooth" }); // Scroll down smoothly
       }, 100); // Normal About Us navigation
@@ -37,14 +37,14 @@ const Navbar = () => {
   const handleAboutClick = (event) => {
     event.preventDefault(); // Prevent default anchor behavior
 
-    if (location.pathname === "/Aplango") {
+    if (location.pathname === "/") {
       window.scroll({
         top: 3210, // Scroll vertically to 100 pixels
         left: 0, // Don't change horizontal position
         behavior: "smooth", // Smooth scroll
       }); // Delay to allow page transition
     } else {
-      navigate("/Aplango/"); // Redirect to home
+      navigate("/"); // Redirect to home
       setTimeout(() => {
         window.scrollTo({ top: 3210, behavior: "smooth" }); // Scroll down smoothly
       }, 100); // Normal About Us navigation
@@ -73,14 +73,14 @@ const Navbar = () => {
   const handleScrollContact = (event) => {
     event.preventDefault(); // Prevent default anchor behavior
 
-    if (location.pathname === "/Aplango") {
+    if (location.pathname === "/") {
       window.scroll({
         top: 4150, // Scroll vertically to 100 pixels
         left: 0, // Don't change horizontal position
         behavior: "smooth", // Smooth scroll
       }); // Delay to allow page transition
     } else {
-      navigate("/Aplango/"); // Redirect to home
+      navigate("/"); // Redirect to home
       setTimeout(() => {
         window.scrollTo({ top: 4150, behavior: "smooth" }); // Scroll down smoothly
       }, 100); // Normal About Us navigation
@@ -89,7 +89,7 @@ const Navbar = () => {
 
   const handleAdmin = (e) => {
     e.preventDefault();
-    navigate('/Aplango/admin');
+    navigate('/admin');
   }
 
   const handleScrollHome = () => {
@@ -123,7 +123,7 @@ const Navbar = () => {
           <div className="hidden md:block ml-10">
             <div className="flex items-baseline justify-between gap-5 space-x-4">
               <Link
-                to="/Aplango/"
+                to="/"
                 onClick={handleScrollHome}
                 onMouseEnter={() => setIsHomeOpen(true)}
                 onMouseLeave={() => setIsHomeOpen(false)}
@@ -194,7 +194,7 @@ const Navbar = () => {
           <div className="hidden md:block">
             {/* <span onClick={handleAdmin} className="me-2 font-medium text-gray-800 cursor-pointer hover:text-indigo-500">Admin</span> */}
             <button
-              onClick={() => navigate("/Aplango/login")}
+              onClick={() => navigate("/login")}
               className="bg-transparent text-gray-800 hover:cursor-pointer border border-gray-800 hover:border-none hover:bg-indigo-600 hover:text-white w-28 py-2 rounded-md text-sm font-medium mr-2"
             >
               Login
