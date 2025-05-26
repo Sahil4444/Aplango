@@ -9,27 +9,97 @@ import {
   Phone,
   Twitter,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 function Footer() {
-  const links = [
-    {
-      link_name: "Home",
-      link_addr: "/",
-    },
-    {
-      link_name: "Clients",
-      link_addr: "/",
-    },
-    {
-      link_name: "About Us",
-      link_addr: "/",
-    },
-    {
-      link_name: "Contact us",
-      link_addr: "/",
-    },
-  ];
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleHomeClick = (event) => {
+    event.preventDefault();
+
+    if (location.pathname === "/" || location.pathname === "/login") {
+      navigate("/");
+
+      // Wait for navigation (even if same page), then scroll to top
+      setTimeout(() => {
+        window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+      }, 100);
+    } else {
+      navigate("/ui");
+
+      // Wait for the navigation to "/ui", then scroll to 1000px
+      setTimeout(() => {
+        window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+      }, 100);
+    }
+  };
+  
+  const handleClientsClick = (event) => {
+    event.preventDefault();
+
+    if (location.pathname === "/" || location.pathname === "/login") {
+      navigate("/");
+
+      // Wait for navigation (even if same page), then scroll to top
+      window.scroll({
+        top: 2200, // Scroll vertically to 100 pixels
+        left: 0, // Don't change horizontal position
+        behavior: "smooth", // Smooth scroll
+      }); // Delay to allow page transition
+    } else {
+      navigate("/ui");
+
+      // Wait for the navigation to "/ui", then scroll to 1000px
+      setTimeout(() => {
+        window.scrollTo({ top: 680, left: 0, behavior: "smooth" });
+      }, 100);
+    }
+  };
+  
+  const handleAboutClick = (event) => {
+    event.preventDefault();
+
+    if (location.pathname === "/" || location.pathname === "/login") {
+      navigate("/");
+
+      // Wait for navigation (even if same page), then scroll to top
+      window.scroll({
+        top: 3210, // Scroll vertically to 100 pixels
+        left: 0, // Don't change horizontal position
+        behavior: "smooth", // Smooth scroll
+      }); // Delay to allow page transition
+    } else {
+      navigate("/ui/about");
+
+      // Wait for the navigation to "/ui", then scroll to 1000px
+      setTimeout(() => {
+        window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+      }, 100);
+    }
+  };
+  
+  const handleContactClick = (event) => {
+    event.preventDefault();
+
+    if (location.pathname === "/" || location.pathname === "/login") {
+      navigate("/");
+
+      // Wait for navigation (even if same page), then scroll to top
+      window.scroll({
+        top: 4150, // Scroll vertically to 100 pixels
+        left: 0, // Don't change horizontal position
+        behavior: "smooth", // Smooth scroll
+      }); // Delay to allow page transition
+    } else {
+      navigate("/ui/contact");
+
+      // Wait for the navigation to "/ui", then scroll to 1000px
+      setTimeout(() => {
+        window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+      }, 100);
+    }
+  };
 
   const presence = [{ country: "India", email: "info@aplango.com" }];
 
@@ -71,16 +141,29 @@ function Footer() {
               QUICK <span className="">LINKS</span>
             </h3>
             <ul className="space-y-2">
-              {links.map((link, index) => (
-                <li key={index}>
-                  <a
-                    href={link.link_addr}
-                    className="text-gray-600 hover:text-indigo-600 font-medium text-sm"
-                  >
-                    {link.link_name}
-                  </a>
-                </li>
-              ))}
+              <li className="ms-1">
+                <Link
+                  className="text-gray-600 hover:text-indigo-600 font-medium text-sm"
+                  onClick={handleHomeClick}
+                >
+                  Home
+                </Link>
+              </li>
+              <li className="ms-1">
+                <Link onClick={handleClientsClick} className="text-gray-600 hover:text-indigo-600 font-medium text-sm">
+                  Clients
+                </Link>
+              </li>
+              <li className="ms-1">
+                <Link onClick={handleAboutClick} className="text-gray-600 hover:text-indigo-600 font-medium text-sm">
+                  About us
+                </Link>
+              </li>
+              <li className="ms-1">
+                <Link onClick={handleContactClick} className="text-gray-600 hover:text-indigo-600 font-medium text-sm">
+                  Contact us
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -143,7 +226,11 @@ function Footer() {
                   FOLLOW US ON
                 </h3>
                 <div className="flex space-x-4">
-                  <Link to="https://www.linkedin.com/company/aplango-promos-pvt-ltd/posts/?feedView=all" target="/blank" className="text-gray-600 hover:text-indigo-600">
+                  <Link
+                    to="https://www.linkedin.com/company/aplango-promos-pvt-ltd/posts/?feedView=all"
+                    target="/blank"
+                    className="text-gray-600 hover:text-indigo-600"
+                  >
                     <Linkedin className="w-6 h-6" />
                   </Link>
                   {/* <a href="/" className="text-gray-600 hover:text-indigo-600">

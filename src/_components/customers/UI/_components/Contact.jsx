@@ -12,6 +12,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Mail, Phone, MapPin } from "lucide-react";
+import emailjs from "@emailjs/browser";
+import { toast } from "react-toastify";
 
 function Contact() {
   const [name, setName] = useState("");
@@ -25,14 +27,30 @@ function Contact() {
     setIsSubmitting(true);
     setSubmitStatus("idle");
 
+    const service_id = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+    const template_id = import.meta.env.VITE_EMAILJS_CONTACT_TEMPLATE_ID;
+    const public_key = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      setSubmitStatus("success");
+      // Send OTP via email
+      const templateParams = {
+        to_email: email,
+        to_name: name,
+        form_message: message,
+      };
+
+      await emailjs.send(service_id, template_id, templateParams, public_key);
+      toast.success("Form submitted successfully.", {
+        position: "top-center",
+      });
       setName("");
       setEmail("");
       setMessage("");
     } catch (error) {
-      setSubmitStatus("error");
+      console.error("Error sending OTP:", error);
+      toast.error("Failed to send OTP. Please try again.", {
+        position: "top-center",
+      });
     } finally {
       setIsSubmitting(false);
     }
