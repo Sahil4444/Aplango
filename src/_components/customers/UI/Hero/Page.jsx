@@ -132,103 +132,146 @@ export default function OffersPage() {
     fetchOffers();
   }, [selectedBrand]);
 
-  // Real-time listener for user offer status
+  // Real-time listener for user offer status based on cardId
   useEffect(() => {
     if (!currentUser || userLoading) return;
 
-    const userOffersRef = doc(firestore, "userOffers", currentUser.uid);
+    const fetchUserCardId = async () => {
+      try {
+        // Fetch user data to get cardId
+        const userDocRef = doc(firestore, "users", currentUser.uid);
+        const userDoc = await getDoc(userDocRef);
 
-    const unsubscribe = onSnapshot(
-      userOffersRef,
-      (doc) => {
-        if (doc.exists()) {
-          const userData = doc.data();
+        if (!userDoc.exists()) {
+          console.error("User document not found");
+          return;
+        }
 
-          // Load redeemed offers with their timestamps
-          if (userData.redeemedOffers) {
-            setRedeemedOffers(userData.redeemedOffers);
+        const userData = userDoc.data();
+        const cardId = userData.cardId;
 
-            // Set up timers for offers that are still within the 8-hour window
-            const currentTime = Date.now();
-            const timers = {};
-            const newExpiredOffers = { ...(userData.expiredOffers || {}) };
+        if (!cardId) {
+          console.error("CardId not found in user data");
+          return;
+        }
 
-            Object.entries(userData.redeemedOffers).forEach(
-              ([offerId, timestamp]) => {
-                const expiryTime = timestamp + 8 * 60 * 60 * 1000; // 8 hours in milliseconds
+        // Use cardId instead of user UID for offer states
+        const cardOffersRef = doc(firestore, "cardOffers", cardId);
 
-                if (currentTime < expiryTime) {
-                  // Offer still valid, calculate remaining time
-                  const remainingTime = Math.floor(
-                    (expiryTime - currentTime) / 1000
-                  );
-                  timers[offerId] = remainingTime;
-                } else {
-                  // Offer expired, mark it as expired
-                  newExpiredOffers[offerId] = true;
+        const unsubscribe = onSnapshot(
+          cardOffersRef,
+          (doc) => {
+            if (doc.exists()) {
+              const cardData = doc.data();
+
+              // Load redeemed offers with their timestamps
+              if (cardData.redeemedOffers) {
+                setRedeemedOffers(cardData.redeemedOffers);
+
+                // Set up timers for offers that are still within the 8-hour window
+                const currentTime = Date.now();
+                const timers = {};
+                const newExpiredOffers = { ...(cardData.expiredOffers || {}) };
+
+                Object.entries(cardData.redeemedOffers).forEach(
+                  ([offerId, timestamp]) => {
+                    const expiryTime = timestamp + 8 * 60 * 60 * 1000; // 8 hours in milliseconds
+
+                    if (currentTime < expiryTime) {
+                      // Offer still valid, calculate remaining time
+                      const remainingTime = Math.floor(
+                        (expiryTime - currentTime) / 1000
+                      );
+                      timers[offerId] = remainingTime;
+                    } else {
+                      // Offer expired, mark it as expired
+                      newExpiredOffers[offerId] = true;
+                    }
+                  }
+                );
+
+                setOfferTimers(timers);
+
+                // Update expired offers if any new ones expired
+                if (
+                  Object.keys(newExpiredOffers).length !==
+                  Object.keys(cardData.expiredOffers || {}).length
+                ) {
+                  updateDoc(cardOffersRef, {
+                    expiredOffers: newExpiredOffers,
+                  }).catch(console.error);
                 }
+              } else {
+                setRedeemedOffers({});
+                setOfferTimers({});
               }
-            );
 
-            setOfferTimers(timers);
+              // Load expired offers
+              if (cardData.expiredOffers) {
+                setExpiredOffers(cardData.expiredOffers);
+              } else {
+                setExpiredOffers({});
+              }
 
-            // Update expired offers if any new ones expired
-            if (
-              Object.keys(newExpiredOffers).length !==
-              Object.keys(userData.expiredOffers || {}).length
-            ) {
-              updateDoc(userOffersRef, {
-                expiredOffers: newExpiredOffers,
+              // Load selected brand preference
+              if (cardData.selectedBrand) {
+                setSelectedBrand(cardData.selectedBrand);
+              }
+            } else {
+              // Initialize card offers document
+              setDoc(cardOffersRef, {
+                redeemedOffers: {},
+                expiredOffers: {},
+                selectedBrand: "",
               }).catch(console.error);
             }
-          } else {
-            setRedeemedOffers({});
-            setOfferTimers({});
+          },
+          (error) => {
+            console.error("Error listening to card offers:", error);
           }
+        );
 
-          // Load expired offers
-          if (userData.expiredOffers) {
-            setExpiredOffers(userData.expiredOffers);
-          } else {
-            setExpiredOffers({});
-          }
-
-          // Load selected brand preference
-          if (userData.selectedBrand) {
-            setSelectedBrand(userData.selectedBrand);
-          }
-        } else {
-          // Initialize user offers document
-          setDoc(userOffersRef, {
-            redeemedOffers: {},
-            expiredOffers: {},
-            selectedBrand: "",
-          }).catch(console.error);
-        }
-      },
-      (error) => {
-        console.error("Error listening to user offers:", error);
+        return () => unsubscribe();
+      } catch (error) {
+        console.error("Error fetching user cardId:", error);
       }
-    );
+    };
 
-    return () => unsubscribe();
+    fetchUserCardId();
   }, [currentUser, userLoading]);
 
-  // Save selected brand to Firestore
+  // Save selected brand to Firestore using cardId
   useEffect(() => {
     if (!currentUser || userLoading || !selectedBrand) return;
 
     const saveSelectedBrand = async () => {
       try {
-        const userOffersRef = doc(firestore, "userOffers", currentUser.uid);
-        const userOffersDoc = await getDoc(userOffersRef);
+        // Fetch user data to get cardId
+        const userDocRef = doc(firestore, "users", currentUser.uid);
+        const userDoc = await getDoc(userDocRef);
 
-        if (userOffersDoc.exists()) {
-          await updateDoc(userOffersRef, {
+        if (!userDoc.exists()) {
+          console.error("User document not found");
+          return;
+        }
+
+        const userData = userDoc.data();
+        const cardId = userData.cardId;
+
+        if (!cardId) {
+          console.error("CardId not found in user data");
+          return;
+        }
+
+        const cardOffersRef = doc(firestore, "cardOffers", cardId);
+        const cardOffersDoc = await getDoc(cardOffersRef);
+
+        if (cardOffersDoc.exists()) {
+          await updateDoc(cardOffersRef, {
             selectedBrand: selectedBrand,
           });
         } else {
-          await setDoc(userOffersRef, {
+          await setDoc(cardOffersRef, {
             redeemedOffers: {},
             expiredOffers: {},
             selectedBrand: selectedBrand,
@@ -270,6 +313,15 @@ export default function OffersPage() {
       }
 
       const userData = userDoc.data();
+      const cardId = userData.cardId;
+
+      if (!cardId) {
+        toast.error("Card ID not found in user profile", {
+          position: "top-center",
+        });
+        return;
+      }
+
       const userName =
         userData.displayName ||
         userData.name ||
@@ -290,22 +342,22 @@ export default function OffersPage() {
         redemption_time: new Date().toLocaleTimeString(),
       };
 
-      // Update the redeemed offers in Firestore
+      // Update the redeemed offers in Firestore using cardId
       const currentTime = Date.now();
       const updatedRedeemedOffers = {
         ...redeemedOffers,
         [offerId]: currentTime,
       };
 
-      const userOffersRef = doc(firestore, "userOffers", currentUser.uid);
-      const userOffersDoc = await getDoc(userOffersRef);
+      const cardOffersRef = doc(firestore, "cardOffers", cardId);
+      const cardOffersDoc = await getDoc(cardOffersRef);
 
-      if (userOffersDoc.exists()) {
-        await updateDoc(userOffersRef, {
+      if (cardOffersDoc.exists()) {
+        await updateDoc(cardOffersRef, {
           redeemedOffers: updatedRedeemedOffers,
         });
       } else {
-        await setDoc(userOffersRef, {
+        await setDoc(cardOffersRef, {
           redeemedOffers: updatedRedeemedOffers,
           expiredOffers: {},
           selectedBrand: selectedBrand,
@@ -343,11 +395,28 @@ export default function OffersPage() {
     try {
       if (!currentUser) return;
 
-      // Update expired offers in Firestore
+      // Fetch user data to get cardId
+      const userDocRef = doc(firestore, "users", currentUser.uid);
+      const userDoc = await getDoc(userDocRef);
+
+      if (!userDoc.exists()) {
+        console.error("User document not found");
+        return;
+      }
+
+      const userData = userDoc.data();
+      const cardId = userData.cardId;
+
+      if (!cardId) {
+        console.error("CardId not found in user data");
+        return;
+      }
+
+      // Update expired offers in Firestore using cardId
       const updatedExpiredOffers = { ...expiredOffers, [offerId]: true };
 
-      const userOffersRef = doc(firestore, "userOffers", currentUser.uid);
-      await updateDoc(userOffersRef, {
+      const cardOffersRef = doc(firestore, "cardOffers", cardId);
+      await updateDoc(cardOffersRef, {
         expiredOffers: updatedExpiredOffers,
       });
 
