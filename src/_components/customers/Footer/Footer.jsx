@@ -190,6 +190,10 @@ function Footer() {
             <div className="space-y-4">
               <div className="flex items-start space-x-2">
                 <Mail className="w-5 h-5 text-indigo-600 mt-0" />
+                <p className="text-gray-600 text-sm">aplangodotcom@gmail.com</p>
+              </div>
+              <div className="flex items-start space-x-2">
+                <Mail className="w-5 h-5 text-indigo-600 mt-0" />
                 <p className="text-gray-600 text-sm">info@aplango.com</p>
               </div>
               <div className="flex items-start space-x-2">
@@ -197,7 +201,13 @@ function Footer() {
                 <p className="text-gray-600 text-sm">+919930030693</p>
               </div>
               <div className="flex items-start space-x-2">
-                <MapPin className="w-5 h-7 text-indigo-600 mt-1" />
+                <MapPin className="w-9 h-5 text-indigo-600 mt-1" />
+                <p className="text-gray-600 text-sm">
+                  1, SHOP NO 4, MANTRI CHAMBER, S T ROAD, Dapodi, Pimpri Chinchwad, Pune, 4110126
+                </p>
+              </div>
+              <div className="flex items-start space-x-2">
+                <MapPin className="w-5 h-5 text-indigo-600 mt-1" />
                 <p className="text-gray-600 text-sm">
                   Ambiance tower, Vasant kunj,New Delhi - 110070
                 </p>
@@ -254,7 +264,7 @@ function Footer() {
         {/* Copyright Section */}
         <div className="mt-12 pt-8 border-t border-gray-200 text-center">
           <p className="text-gray-500 text-sm">
-            ©2025 Aplango Pvt. Ltd. All Rights Reserved
+            ©2025 Aplango Promo Services
           </p>
         </div>
       </div>
