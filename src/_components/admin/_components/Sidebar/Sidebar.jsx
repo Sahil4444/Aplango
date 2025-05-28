@@ -10,6 +10,7 @@ import {
   ShieldCheck,
   ShoppingBag,
   User2Icon,
+  BriefcaseBusiness
 } from "lucide-react";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 
@@ -21,58 +22,63 @@ function Sidebar() {
     {
       label: "Dashboard",
       icon: <LayoutDashboard />,
-      path: "/Aplango/admin/",
+      path: "/admin/",
     },
     {
       label: "Admins",
       icon: <ShieldCheck />,
-      path: "/Aplango/admin/admins",
+      path: "/admin/admins",
     },
     {
       label: "Users",
       icon: <User2Icon />,
-      path: "/Aplango/admin/users",
+      path: "/admin/users",
     },
     {
       label: "Manage Cards",
       icon: <CreditCard />,
-      path: "/Aplango/admin/cards",
+      path: "/admin/cards",
     },
     {
       label: "Brands",
       icon: <ShoppingBag />,
-      path: "/Aplango/admin/brands",
+      path: "/admin/brands",
     },
     {
       label: "Manage Offers",
       icon: <HandCoins />,
-      path: "/Aplango/admin/offers",
+      path: "/admin/offers",
+    },
+    {
+      label: "Careers",
+      icon: <BriefcaseBusiness />,
+      path: "/admin/careers",
     },
     {
       label: "History",
       icon: <History />,
-      path: "/Aplango/admin/history",
+      path: "/admin/history",
     },
     {
       label: "Redemptions",
       icon: <BellRing />,
-      path: "/Aplango/admin/redemptions",
+      path: "/admin/redemptions",
     },
 
     {
       label: "Account",
       icon: <CircleUserRound />,
-      path: "/Aplango/admin/account",
+      path: "/admin/account",
     },
     {
       label: "Help",
       icon: <HelpCircle />,
-      path: "/Aplango/admin/help",
+      path: "/admin/help",
     },
   ];
 
   const handleScrollHome = () => {
-    navigate("/Aplango/ui");
+    navigate("/ui");
     window.scroll({
       top: 0, // Scroll vertically to 100 pixels
       left: 0, // Don't change horizontal position
@@ -109,7 +115,7 @@ function Sidebar() {
                 to={item.path}
                 className={`w-full hover:scale-105 transition-all text-md font-semibold rounded-lg flex items-center justify-center md:justify-start gap-0 md:gap-5 text-start px-3 py-4 
                                     ${
-                                      (item.path === "/Aplango/dashboard/" &&
+                                      (item.path === "/dashboard/" &&
                                         isDashboardActive) ||
                                       location.pathname === item.path
                                         ? "bg-indigo-600 text-white"

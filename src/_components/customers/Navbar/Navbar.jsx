@@ -13,6 +13,7 @@ const Navbar = () => {
   const [isContactOpen, setIsContactOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [isCareersOpen, setIsCareersOpen] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -32,6 +33,11 @@ const Navbar = () => {
         window.scrollTo({ top: 2200, behavior: "smooth" }); // Scroll down smoothly
       }, 100); // Normal About Us navigation
     }
+  };
+
+  const handleCareersClick = (event) => {
+    event.preventDefault();
+    navigate("/careers");
   };
 
   const handleAboutClick = (event) => {
@@ -145,6 +151,20 @@ const Navbar = () => {
                 <span
                   style={{
                     transform: isClientsOpen ? "scaleX(1)" : "scaleX(0)",
+                  }}
+                  className="absolute origin-left -bottom-1 -left-2 -right-2 h-1 rounded-full bg-indigo-600 transition-transform duration-300 ease-out"
+                ></span>
+              </Link>
+              <Link
+                onClick={handleCareersClick}
+                onMouseEnter={() => setIsCareersOpen(true)}
+                onMouseLeave={() => setIsCareersOpen(false)}
+                className="text-gray-800 relative hover:text-indigo-600 hover:cursor-pointer px-0 py-1 rounded-md text-md font-medium"
+              >
+                Careers
+                <span
+                  style={{
+                    transform: isCareersOpen ? "scaleX(1)" : "scaleX(0)",
                   }}
                   className="absolute origin-left -bottom-1 -left-2 -right-2 h-1 rounded-full bg-indigo-600 transition-transform duration-300 ease-out"
                 ></span>

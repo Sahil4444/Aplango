@@ -23,6 +23,11 @@ import BrandRegister from "./_components/admin/Pages/BrandRegister";
 import Offers from "./_components/admin/Pages/Offers";
 import AdminLogin from "./_components/admin/Pages/AdminLogin";
 import CouponRegister from "./_components/admin/Pages/CouponRegister";
+import Careers from "./_components/admin/Pages/Careers";
+import AddJob from "./_components/admin/Pages/AddJob";
+import JobDetails from "./_components/admin/Pages/JobDetails";
+import CareerHome from "./_components/customers/Careers/Careers";
+import JobInfo from "./_components/customers/Careers/JobInfo";
 
 const router = createBrowserRouter([
   {
@@ -32,6 +37,14 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <AnimatedLoginForm />,
+  },
+  {
+    path: "/careers",
+    element: <CareerHome />,
+  },
+  {
+    path: "/careers/:id",
+    element: <JobInfo />,
   },
   {
     path: "/ui/",
@@ -88,6 +101,10 @@ const router = createBrowserRouter([
         element: <Offers />,
       },
       {
+        path: "careers",
+        element: <Careers />,
+      },
+      {
         path: "history",
         element: <History />,
       },
@@ -106,6 +123,14 @@ const router = createBrowserRouter([
       {
         path: "cardregister",
         element: <CardRegister />,
+      },
+      {
+        path: "careerregister",
+        element: <AddJob />,
+      },
+      {
+        path: "career/:id",
+        element: <JobDetails />,
       },
       {
         path: "brandregister",
