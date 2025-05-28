@@ -80,6 +80,12 @@ const MobileDrawer = ({ isOpen, setIsOpen }) => {
       }, 100); // Normal About Us navigation
     }
   };
+  
+  const handleCareersHome = (event) => {
+    event.preventDefault(); // Prevent default anchor behavior
+    setIsOpen(false);
+    navigate("/careers");
+  };
 
   const handleAboutClick = (event) => {
     event.preventDefault(); // Prevent default anchor behavior
@@ -137,6 +143,12 @@ const MobileDrawer = ({ isOpen, setIsOpen }) => {
           className="text-black hover:text-gray-600 block px-3 py-2 rounded-md text-base font-medium"
         >
           Clients
+        </Link>
+        <Link
+          onClick={handleCareersHome}
+          className="text-black hover:text-gray-600 block px-3 py-2 rounded-md text-base font-medium"
+        >
+          Careers
         </Link>
         <Link
           onClick={handleAboutClick}
