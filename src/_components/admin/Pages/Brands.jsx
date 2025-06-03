@@ -150,7 +150,7 @@ function Brands() {
 
   // Navigate to brand registration page
   const handleBrandRegister = () => {
-    const path = `/Aplango/admin/brandregister`;
+    const path = `/admin/brandregister`;
     navigate(path);
   };
 

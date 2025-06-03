@@ -156,7 +156,7 @@ function Offers() {
   const [filteredCoupons, setFilteredCoupons] = useState(coupons);
 
   const handleOfferRegister = () => {
-    const path = `/Aplango/admin/couponregister`;
+    const path = `/admin/couponregister`;
     navigate(path);
   };
 

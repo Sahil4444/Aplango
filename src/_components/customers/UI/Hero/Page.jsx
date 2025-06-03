@@ -475,6 +475,7 @@ export default function OffersPage() {
 
       <div className="max-w-xl mx-auto my-8">
         <Select
+          className="flex items-center justify-center"
           value={selectedBrand}
           onValueChange={(value) => setSelectedBrand(value)}
           disabled={loadingBrands}
@@ -643,7 +644,12 @@ function OfferCard({
         <CardTitle className="text-lg">{offer.desc}</CardTitle>
         {offer.expiryDate && (
           <p className="text-sm text-muted-foreground">
-            Expires on: {new Date(offer.expiryDate).toLocaleDateString()}
+            Expires on:{" "}
+            {new Date(offer.expiryDate).toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+            })}
           </p>
         )}
       </CardHeader>
