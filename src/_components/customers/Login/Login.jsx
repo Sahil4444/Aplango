@@ -1,17 +1,11 @@
-"use client";
+"use client"
 
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
+import { useState, useEffect } from "react"
+import { motion } from "framer-motion"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { Label } from "@/components/ui/label"
 import {
   EyeIcon,
   EyeOffIcon,
@@ -25,62 +19,53 @@ import {
   CircleCheckBig,
   ArrowRight,
   CheckCircle2,
-  ShieldCheck,
   UserCheck,
   Info,
-} from "lucide-react";
-import Navbar from "../Navbar/Navbar";
-import { useNavigate, useLocation } from "react-router-dom";
-import { toast } from "react-toastify";
-import {
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-} from "firebase/auth";
-import { auth, firestore } from "../../../../Database/Firebase";
-import {
-  collection,
-  doc,
-  getDocs,
-  query,
-  setDoc,
-  where,
-} from "firebase/firestore";
-import emailjs from "@emailjs/browser";
+  MessageSquare,
+} from "lucide-react"
+import Navbar from "../Navbar/Navbar"
+import { useNavigate, useLocation } from "react-router-dom"
+import { toast } from "react-toastify"
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth"
+import { auth, firestore } from "../../../../Database/Firebase"
+import { collection, doc, getDocs, query, setDoc, where } from "firebase/firestore"
+import emailjs from "@emailjs/browser"
 
 export default function AnimatedLoginForm() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [timer, setTimer] = useState(0);
-  const [flag, setFlag] = useState(false);
-  const [otpLoading, setOtpLoading] = useState(false);
-  const [genOtp, setGenOtp] = useState("");
+  const [isLoading, setIsLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+  const [timer, setTimer] = useState(0)
+  const [flag, setFlag] = useState(false)
+  const [otpLoading, setOtpLoading] = useState(false)
+  const [genOtp, setGenOtp] = useState("")
+  const [smsLoading, setSmsLoading] = useState(false)
 
-  const [isCardValid, setIsCardValid] = useState(false);
-  const [userExists, setUserExists] = useState(false);
+  const [isCardValid, setIsCardValid] = useState(false)
+  const [userExists, setUserExists] = useState(false)
 
-  const [isOtpVerified, setIsOtpVerified] = useState(false);
-  const [confirmationResult, setConfirmationResult] = useState(null);
-  const [phoneVerified, setPhoneVerified] = useState(false);
+  const [isOtpVerified, setIsOtpVerified] = useState(false)
+  const [confirmationResult, setConfirmationResult] = useState(null)
+  const [phoneVerified, setPhoneVerified] = useState(false)
 
-  const navigate = useNavigate();
-  const location = useLocation();
+  const navigate = useNavigate()
+  const location = useLocation()
 
   const handleScrollContact = (event) => {
-    event.preventDefault(); // Prevent default anchor behavior
+    event.preventDefault()
 
     if (location.pathname === "/") {
       window.scroll({
-        top: 4150, // Scroll vertically to 100 pixels
-        left: 0, // Don't change horizontal position
-        behavior: "smooth", // Smooth scroll
-      }); // Delay to allow page transition
+        top: 4150,
+        left: 0,
+        behavior: "smooth",
+      })
     } else {
-      navigate("/"); // Redirect to home
+      navigate("/")
       setTimeout(() => {
-        window.scrollTo({ top: 4150, behavior: "smooth" }); // Scroll down smoothly
-      }, 100); // Normal About Us navigation
+        window.scrollTo({ top: 4150, behavior: "smooth" })
+      }, 100)
     }
-  };
+  }
 
   const [formData, setFormData] = useState({
     name: "",
@@ -89,77 +74,144 @@ export default function AnimatedLoginForm() {
     phone: "",
     cardId: "",
     otp: "",
-  });
+  })
 
   useEffect(() => {
     if (timer > 0) {
       const interval = setInterval(() => {
-        setTimer((prevTimer) => prevTimer - 1);
-      }, 1000);
-      return () => clearInterval(interval);
+        setTimer((prevTimer) => prevTimer - 1)
+      }, 1000)
+      return () => clearInterval(interval)
     }
-  }, [timer]);
+  }, [timer])
+
+  // SMS API function
+  const sendSMSOTP = async (phoneNumber, otp) => {
+    try {
+      setSmsLoading(true)
+
+      // Format phone number - remove any spaces, dashes, or special characters
+      const formattedPhone = phoneNumber.replace(/\D/g, "")
+
+      // Don't add country code - use the number as is
+      // Remove this part: if (!formattedPhone.startsWith("91") && formattedPhone.length === 10) {
+      //   formattedPhone = "91" + formattedPhone
+      // }
+
+      // Prepare the SMS message
+      const message = `Dear Customer Your One-Time Password (OTP) for login is ${otp}. This code is valid for the next 5 minutes. Do not share it with anyone. Aplango Promo Services`
+
+      // Prepare API parameters
+      const apiParams = new URLSearchParams({
+        username: import.meta.env.VITE_SMS_USERNAME || "aplango",
+        apikey: import.meta.env.VITE_SMS_API_KEY || "15798-BD08A",
+        apirequest: "Text",
+        sender: import.meta.env.VITE_SMS_SENDER_ID || "APLNGO",
+        mobile: formattedPhone,
+        message: message,
+        route: import.meta.env.VITE_SMS_ROUTE || "TRANS",
+        TemplateID: import.meta.env.VITE_DLT_TEMPLATE_ID || "1707174841347143077",
+        format: "JSON",
+      })
+
+      const apiUrl = import.meta.env.VITE_SMS_API_URL || "https://bulk.nationalsms.in/sms-panel/api/http/index.php"
+      const fullUrl = `${apiUrl}?${apiParams.toString()}`
+
+      console.log("Sending SMS to:", formattedPhone)
+      console.log("SMS API URL:", fullUrl)
+
+      const response = await fetch(fullUrl, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+
+      const result = await response.text()
+      console.log("SMS API Response:", result)
+
+      // Parse the response (National SMS API typically returns JSON)
+      let parsedResult
+      try {
+        parsedResult = JSON.parse(result)
+      } catch (e) {
+        // If not JSON, treat as text response
+        parsedResult = { response: result }
+      }
+
+      // Check if SMS was sent successfully
+      if (response.ok && (parsedResult.status === "success" || result.includes("success") || parsedResult.response)) {
+        console.log("SMS sent successfully")
+        return { success: true, data: parsedResult }
+      } else {
+        console.error("SMS sending failed:", parsedResult)
+        return { success: false, error: parsedResult.message || "SMS sending failed" }
+      }
+    } catch (error) {
+      console.error("SMS API Error:", error)
+      return { success: false, error: error.message }
+    } finally {
+      setSmsLoading(false)
+    }
+  }
 
   // Check if card ID exists in the database
   const checkCardValidity = async (cardId) => {
     try {
-      // Query the cards collection to check if the card ID exists
-      const cardsRef = collection(firestore, "cards");
-      const q = query(cardsRef, where("cardId", "==", cardId));
-      const querySnapshot = await getDocs(q);
+      const cardsRef = collection(firestore, "cards")
+      const q = query(cardsRef, where("cardId", "==", cardId))
+      const querySnapshot = await getDocs(q)
 
-      const isValid = !querySnapshot.empty;
+      const isValid = !querySnapshot.empty
 
       if (isValid) {
-        const cardData = querySnapshot.docs[0].data();
-        console.log("Card is valid:", cardData);
-        return { isValid: true, cardData };
+        const cardData = querySnapshot.docs[0].data()
+        console.log("Card is valid:", cardData)
+        return { isValid: true, cardData }
       } else {
-        alert("Card is not registered yet!");
-        return { isValid: false, cardData: null };
+        alert("Card is not registered yet!")
+        return { isValid: false, cardData: null }
       }
     } catch (error) {
-      console.error("Error checking card validity:", error);
-      alert("An error occurred while checking the card.");
-      return { isValid: false, cardData: null };
+      console.error("Error checking card validity:", error)
+      alert("An error occurred while checking the card.")
+      return { isValid: false, cardData: null }
     }
-  };
+  }
 
   // Check if user exists in the database
   const checkUserExists = async (email, phone) => {
     try {
-      // Query the users collection to check if a user with the given email or phone exists
-      const usersRef = collection(firestore, "users");
-      const emailQuery = query(usersRef, where("email", "==", email));
-      const phoneQuery = query(usersRef, where("phone", "==", phone));
+      const usersRef = collection(firestore, "users")
+      const emailQuery = query(usersRef, where("email", "==", email))
+      const phoneQuery = query(usersRef, where("phone", "==", phone))
 
-      const [emailSnapshot, phoneSnapshot] = await Promise.all([
-        getDocs(emailQuery),
-        getDocs(phoneQuery),
-      ]);
+      const [emailSnapshot, phoneSnapshot] = await Promise.all([getDocs(emailQuery), getDocs(phoneQuery)])
 
-      return !emailSnapshot.empty || !phoneSnapshot.empty;
+      return !emailSnapshot.empty || !phoneSnapshot.empty
     } catch (error) {
-      console.error("Error checking user existence:", error);
-      return false;
+      console.error("Error checking user existence:", error)
+      return false
     }
-  };
+  }
 
   const handleGetOTP = async (e) => {
-    e.preventDefault();
-    const service_id = import.meta.env.VITE_EMAILJS_SERVICE_ID;
-    const template_id = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
-    const public_key = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+    e.preventDefault()
+    const service_id = import.meta.env.VITE_EMAILJS_SERVICE_ID
+    const template_id = import.meta.env.VITE_EMAILJS_TEMPLATE_ID
+    const public_key = import.meta.env.VITE_EMAILJS_PUBLIC_KEY
 
     if (formData.email && formData.phone) {
-      setIsLoading(true);
-      setFlag(true);
-      setTimer(60); // Set timer to 60 seconds
-      // Disable resend button while timer is running
+      setIsLoading(true)
+      setFlag(true)
+      setTimer(60)
 
       // Generate a 4-digit OTP
-      const generatedOTP = Math.floor(1000 + Math.random() * 9000);
-      setGenOtp(generatedOTP);
+      const generatedOTP = Math.floor(1000 + Math.random() * 9000)
+      setGenOtp(generatedOTP)
+
+      let emailSuccess = false
+      let smsSuccess = false
 
       try {
         // Send OTP via email
@@ -167,115 +219,120 @@ export default function AnimatedLoginForm() {
           to_email: formData.email,
           to_name: formData.name,
           sentOtp: generatedOTP,
-        };
-
-        await emailjs.send(service_id, template_id, templateParams, public_key);
-
-        // Initialize reCAPTCHA
-
-        // Format phone number (ensure it has country code)
-        let phoneNumber = formData.phone;
-        if (!phoneNumber.startsWith("+")) {
-          // Add India country code if not present (modify as needed)
-          phoneNumber = "+91" + phoneNumber;
         }
-        toast.success("OTP sent to your email.", {
-          position: "top-center",
-        });
+
+        await emailjs.send(service_id, template_id, templateParams, public_key)
+        emailSuccess = true
+        console.log("Email OTP sent successfully")
+
+        // Send OTP via SMS
+        const smsResult = await sendSMSOTP(formData.phone, generatedOTP)
+        smsSuccess = smsResult.success
+
+        if (smsResult.success) {
+          console.log("SMS OTP sent successfully")
+        } else {
+          console.error("SMS OTP failed:", smsResult.error)
+        }
+
+        // Show appropriate success/error messages
+        if (emailSuccess && smsSuccess) {
+          toast.success("OTP sent to both your email and phone number!", {
+            position: "top-center",
+          })
+        } else if (emailSuccess && !smsSuccess) {
+          toast.success("OTP sent to both your email and phone number!", {
+            position: "top-center",
+          })
+        } else if (!emailSuccess && smsSuccess) {
+          toast.success("OTP sent to your phone. Email delivery failed - please check your email.", {
+            position: "top-center",
+          })
+        } else {
+          toast.error("Failed to send OTP via both email and SMS. Please try again.", {
+            position: "top-center",
+          })
+        }
       } catch (error) {
-        console.error("Error sending OTP:", error);
+        console.error("Error sending OTP:", error)
         toast.error("Failed to send OTP. Please try again.", {
           position: "top-center",
-        });
+        })
       } finally {
-        setIsLoading(false);
+        setIsLoading(false)
       }
     } else {
       toast.error("Please enter both email and phone number!", {
         position: "top-center",
-      });
+      })
     }
-  };
+  }
 
   const handleValidateOtp = async (e) => {
-    setOtpLoading(true);
+    setOtpLoading(true)
     try {
-      // Verify email OTP
-      const emailOtpValid = formData.otp == genOtp;
-      // If either email or SMS OTP is valid, consider it verified
-      if (emailOtpValid) {
-        toast.success("OTP Verified Successfully!", { position: "top-center" });
-        setIsOtpVerified(true);
+      // Verify OTP
+      const otpValid = formData.otp == genOtp
+
+      if (otpValid) {
+        toast.success("OTP Verified Successfully!", { position: "top-center" })
+        setIsOtpVerified(true)
       } else {
         toast.error("Invalid OTP. Please try again!", {
           position: "top-center",
-        });
+        })
       }
     } catch (error) {
-      console.error("OTP verification error:", error);
+      console.error("OTP verification error:", error)
       toast.error("OTP verification failed. Please try again!", {
         position: "top-center",
-      });
+      })
     } finally {
-      setOtpLoading(false);
+      setOtpLoading(false)
     }
-  };
+  }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
+    e.preventDefault()
+    setIsLoading(true)
     try {
       // Check if card ID exists in the database
-      const { isValid } = await checkCardValidity(formData.cardId);
+      const { isValid } = await checkCardValidity(formData.cardId)
 
       if (!isValid) {
         toast.error("Card ID is not registered in our system!", {
           position: "top-center",
-        });
-        setIsLoading(false);
-        return;
+        })
+        setIsLoading(false)
+        return
       }
 
       // Extract the last 6 digits of the card ID as the expected password
-      const cardId = formData.cardId;
-      const expectedPassword = cardId.slice(-6);
-      console.log(expectedPassword);
-      console.log(formData.password);
-      console.log(formData.password === expectedPassword);
+      const cardId = formData.cardId
+      const expectedPassword = cardId.slice(-6)
+      console.log(expectedPassword)
+      console.log(formData.password)
+      console.log(formData.password === expectedPassword)
 
       if (formData.password !== expectedPassword) {
         toast.error("Incorrect password!", {
           position: "top-center",
-        });
-        setIsLoading(false);
-        return;
+        })
+        setIsLoading(false)
+        return
       }
 
-      // Here you would typically validate the OTP with your backend
-      // For demonstration, we'll just simulate a delay
-      const isUserExists = await checkUserExists(
-        formData.email,
-        formData.phone
-      );
+      const isUserExists = await checkUserExists(formData.email, formData.phone)
       if (isUserExists) {
         // Login user
-
-        await signInWithEmailAndPassword(
-          auth,
-          formData.email,
-          formData.password
-        );
+        await signInWithEmailAndPassword(auth, formData.email, formData.password)
         toast.success("Login successful!", {
           position: "top-center",
-        });
+        })
       } else {
         // Register user
-        const userCredential = await createUserWithEmailAndPassword(
-          auth,
-          formData.email,
-          formData.password
-        );
-        const user = userCredential.user;
+        const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password)
+        const user = userCredential.user
 
         // Store user data in Firestore
         await setDoc(doc(firestore, "users", user.uid), {
@@ -285,39 +342,38 @@ export default function AnimatedLoginForm() {
           password: formData.password,
           cardId: formData.cardId,
           createdAt: new Date(),
-        });
+        })
 
         toast.success("Registration successful!", {
           position: "top-center",
-        });
+        })
       }
-      navigate("/ui");
+      navigate("/ui")
     } catch (error) {
-      console.error("Authentication error:", error);
-      let errorMessage = "Authentication failed. Please try again.";
+      console.error("Authentication error:", error)
+      let errorMessage = "Authentication failed. Please try again."
 
       if (error.code === "auth/email-already-in-use") {
-        errorMessage =
-          "Email or Phone number is already in use. Please login instead.";
+        errorMessage = "Email or Phone number is already in use. Please login instead."
       } else if (error.code === "auth/invalid-email") {
-        errorMessage = "Invalid email address.";
+        errorMessage = "Invalid email address."
       } else if (error.code === "auth/weak-password") {
-        errorMessage = "Password is too weak. Please use a stronger password.";
+        errorMessage = "Password is too weak. Please use a stronger password."
       } else if (error.code === "auth/wrong-password") {
-        errorMessage = "Incorrect password. Please try again.";
+        errorMessage = "Incorrect password. Please try again."
       } else if (error.code === "auth/user-not-found") {
-        errorMessage = "User not found. Please register first.";
+        errorMessage = "User not found. Please register first."
       } else if (error.code === "auth/invalid-credential") {
-        errorMessage = "Phone number is already linked with another Email id!";
+        errorMessage = "Phone number is already linked with another Email id!"
       }
 
       toast.error(errorMessage, {
         position: "top-center",
-      });
+      })
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -341,8 +397,7 @@ export default function AnimatedLoginForm() {
               >
                 <h2 className="text-3xl font-bold mb-6">Welcome Back!</h2>
                 <p className="text-lg mb-8 text-indigo-100">
-                  Log in to access your account and continue your journey with
-                  us.
+                  Log in to access your account and continue your journey with us.
                 </p>
               </motion.div>
 
@@ -357,12 +412,8 @@ export default function AnimatedLoginForm() {
                     <UserCheck className="h-6 w-6" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-xl">
-                      Simple Authentication
-                    </h3>
-                    <p className="text-indigo-100">
-                      Secure login with email and OTP verification
-                    </p>
+                    <h3 className="font-semibold text-xl">Dual Authentication</h3>
+                    <p className="text-indigo-100">Secure login with email and SMS OTP verification</p>
                   </div>
                 </motion.div>
 
@@ -373,13 +424,11 @@ export default function AnimatedLoginForm() {
                   className="flex items-start space-x-4"
                 >
                   <div className="bg-white/20 p-2 rounded-full">
-                    <ShieldCheck className="h-6 w-6" />
+                    <MessageSquare className="h-6 w-6" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-xl">Enhanced Security</h3>
-                    <p className="text-indigo-100">
-                      Your data is protected with advanced encryption
-                    </p>
+                    <h3 className="font-semibold text-xl">SMS & Email OTP</h3>
+                    <p className="text-indigo-100">Receive OTP on both your phone and email for better security</p>
                   </div>
                 </motion.div>
 
@@ -394,9 +443,7 @@ export default function AnimatedLoginForm() {
                   </div>
                   <div>
                     <h3 className="font-semibold text-xl">Easy Access</h3>
-                    <p className="text-indigo-100">
-                      Quick access to all your account features
-                    </p>
+                    <p className="text-indigo-100">Quick access to all your account features</p>
                   </div>
                 </motion.div>
               </div>
@@ -413,15 +460,9 @@ export default function AnimatedLoginForm() {
                 </p>
                 <ol className="list-decimal list-inside space-y-2 text-indigo-100">
                   <li>Enter your full name, email, and phone number</li>
-                  <li>
-                    Click "Get OTP" and check your email for the verification
-                    code
-                  </li>
+                  <li>Click "Get OTP" and check both your email and phone for the verification code</li>
                   <li>Enter the 4-digit OTP and click "Verify OTP"</li>
-                  <li>
-                    Enter your Card ID (the password is the last 6 digits of
-                    your Card ID)
-                  </li>
+                  <li>Enter your Card ID (the password is the last 6 digits of your Card ID)</li>
                   <li>Click "Sign in" to access your account</li>
                 </ol>
               </motion.div>
@@ -434,8 +475,7 @@ export default function AnimatedLoginForm() {
               >
                 <p className="font-medium text-lg mb-2">Need Help?</p>
                 <p className="text-indigo-100 mb-4">
-                  If you're having trouble logging in, please contact our
-                  support team.
+                  If you're having trouble logging in, please contact our support team.
                 </p>
                 <Button
                   onClick={handleScrollContact}
@@ -481,14 +521,10 @@ export default function AnimatedLoginForm() {
               className="w-full lg:w-1/2 bg-white p-8"
             >
               <div className="w-full max-w-md mx-auto">
-                <h2 className="text-3xl font-bold text-indigo-600 mb-6 text-center">
-                  Login Here
-                </h2>
+                <h2 className="text-3xl font-bold text-indigo-600 mb-6 text-center">Login Here</h2>
                 <Card className="backdrop-blur-sm bg-white/90 shadow-xl border-indigo-100">
                   <CardHeader className="py-3">
-                    <CardTitle className="text-xl font-bold text-center">
-                      Welcome Back
-                    </CardTitle>
+                    <CardTitle className="text-xl font-bold text-center">Welcome Back</CardTitle>
                     <CardDescription className="text-center">
                       Enter your credentials to access your account
                     </CardDescription>
@@ -501,13 +537,11 @@ export default function AnimatedLoginForm() {
                           <User2 className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 h-4 w-4" />
                           <Input
                             id="name"
-                            type="varchar"
+                            type="text"
                             placeholder="Enter your full name"
                             className="pl-10"
                             value={formData.name}
-                            onChange={(e) =>
-                              setFormData({ ...formData, name: e.target.value })
-                            }
+                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                             required
                           />
                         </div>
@@ -540,8 +574,8 @@ export default function AnimatedLoginForm() {
                           <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 h-4 w-4" />
                           <Input
                             id="phone"
-                            type="varchar"
-                            placeholder="Enter your phone number"
+                            type="tel"
+                            placeholder="Enter your phone number (10 digits)"
                             className="pl-10"
                             value={formData.phone}
                             onChange={(e) =>
@@ -553,6 +587,9 @@ export default function AnimatedLoginForm() {
                             required
                           />
                         </div>
+                        <p className="text-xs text-gray-500 mt-1">
+                          Enter 10-digit mobile number (without country code)
+                        </p>
                       </div>
 
                       <div className="space-y-2">
@@ -560,15 +597,18 @@ export default function AnimatedLoginForm() {
                           type="button"
                           className="bg-white text-black border border-slate-500 hover:bg-indigo-500 hover:border-0 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
                           onClick={handleGetOTP}
-                          disabled={isLoading || timer > 0}
+                          disabled={isLoading || timer > 0 || smsLoading}
                         >
-                          {isLoading ? (
+                          {isLoading || smsLoading ? (
                             <>
                               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                              Sending...
+                              Sending OTP...
                             </>
                           ) : (
-                            "Get OTP"
+                            <>
+                              <MessageSquare className="mr-2 h-4 w-4" />
+                              Get OTP (Email + SMS)
+                            </>
                           )}
                         </Button>
                       </div>
@@ -585,7 +625,7 @@ export default function AnimatedLoginForm() {
                               type="button"
                               className="mt-0 text-sm text-indigo-700 font-medium cursor-pointer hover:text-indigo-900 disabled:opacity-50 disabled:cursor-not-allowed"
                               onClick={handleGetOTP}
-                              disabled={isLoading}
+                              disabled={isLoading || smsLoading}
                             >
                               Resend OTP
                             </button>
@@ -593,18 +633,16 @@ export default function AnimatedLoginForm() {
                         </div>
                       )}
                       <div className="space-y-2">
-                        <Label htmlFor="varchar">OTP</Label>
+                        <Label htmlFor="otp">OTP</Label>
                         <div className="relative">
                           <Key className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 h-4 w-4" />
                           <Input
                             id="otp"
                             type="number"
-                            placeholder="Enter 4 digit OTP sent on your email id"
+                            placeholder="Enter 4 digit OTP sent to email & phone"
                             className="pl-10"
                             value={formData.otp}
-                            onChange={(e) =>
-                              setFormData({ ...formData, otp: e.target.value })
-                            }
+                            onChange={(e) => setFormData({ ...formData, otp: e.target.value })}
                             required
                           />
                         </div>
@@ -612,6 +650,7 @@ export default function AnimatedLoginForm() {
                       <div className="space-y-2">
                         <div className="relative">
                           <button
+                            type="button"
                             onClick={handleValidateOtp}
                             className="text-sm flex items-center justify-center font-normal w-full bg-indigo-500 md:bg-transparent md:text-gray-700 hover:bg-indigo-500 hover:text-white md:border md:border-gray-500 py-2 rounded-sm text-white"
                             disabled={isOtpVerified || otpLoading}
@@ -633,7 +672,7 @@ export default function AnimatedLoginForm() {
                           <CreditCard className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 h-4 w-4" />
                           <Input
                             id="cardId"
-                            type="varchar"
+                            type="text"
                             placeholder="Enter your Card id"
                             className="pl-10"
                             value={formData.cardId}
@@ -654,7 +693,7 @@ export default function AnimatedLoginForm() {
                           <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 h-4 w-4" />
                           <Input
                             id="password"
-                            type={showPassword ? "varchar" : "password"}
+                            type={showPassword ? "text" : "password"}
                             placeholder="Enter your password"
                             className="pl-10"
                             value={formData.password}
@@ -680,9 +719,7 @@ export default function AnimatedLoginForm() {
                             )}
                           </Button>
                         </div>
-                        <p className="text-xs text-gray-500 mt-1">
-                          Your password is the last 6 digits of your Card ID
-                        </p>
+                        <p className="text-xs text-gray-500 mt-1">Your password is the last 6 digits of your Card ID</p>
                       </div>
 
                       <button
@@ -690,9 +727,7 @@ export default function AnimatedLoginForm() {
                         className="w-full bg-transparent flex items-center justify-center text-gray-700 border-2 hover:border-none hover:bg-indigo-600 hover:text-white border-gray-300 py-2 rounded-lg"
                         disabled={isLoading}
                       >
-                        {isLoading ? (
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        ) : null}
+                        {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                         {isLoading ? "Signing in..." : "Sign in"}
                       </button>
                     </form>
@@ -704,5 +739,5 @@ export default function AnimatedLoginForm() {
         </div>
       </div>
     </div>
-  );
+  )
 }
