@@ -104,14 +104,16 @@ export default function AnimatedLoginForm() {
   // SMS API function
   const sendSMSOTP = async (phoneNumber, otp) => {
     try {
-      setSmsLoading(true);
-
-      // Format phone number (digits only)
+      // Format phone number digits only
       const formattedPhone = phoneNumber.replace(/\D/g, "");
 
-      // Send request to your backend
+      if (formattedPhone.length !== 10) {
+        throw new Error("Please provide a valid 10-digit phone number");
+      }
+
+      // Call your cloud function URL here
       const response = await fetch(
-        `${import.meta.env.VITE_API_BASE || "http://localhost:5000"}/send-otp`,
+        "https://us-central1-aplango.cloudfunctions.net/sendSms",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -134,8 +136,6 @@ export default function AnimatedLoginForm() {
     } catch (error) {
       console.error("Error sending SMS:", error);
       return { success: false, error: error.message };
-    } finally {
-      setSmsLoading(false);
     }
   };
 

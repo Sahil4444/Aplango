@@ -8,7 +8,7 @@ const PORT = import.meta.env.PORT || 5000
 // Middleware
 app.use(
   cors({
-    origin: ["http://localhost:3000", "https://aplango.com"], // Add your production domain
+    origin: ["http://localhost:3000", "https://aplango.com", 'http://localhost:5173'], // Add your production domain
     credentials: true,
   }),
 )
