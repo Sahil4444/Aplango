@@ -104,26 +104,35 @@ export default function AnimatedLoginForm() {
   // SMS API function
   const sendSMSOTP = async (phoneNumber, otp) => {
     try {
-      // Format phone number digits only
+      setSmsLoading(true);
+
+      // Clean and format the phone number
       const formattedPhone = phoneNumber.replace(/\D/g, "");
 
-      if (formattedPhone.length !== 10) {
-        throw new Error("Please provide a valid 10-digit phone number");
-      }
+      // Build the URL with query parameters
+      const baseUrl = "https://alots.in/sms-panel/api/http/index.php";
+      const queryParams = new URLSearchParams({
+        username: import.meta.env.VITE_SMS_USERNAME,
+        apikey: import.meta.env.VITE_SMS_API_KEY,
+        apirequest: "Text",
+        sender: import.meta.env.VITE_SMS_SENDER_ID, // Replace with your approved Sender ID
+        mobile: formattedPhone,
+        message: `Dear Customer Your One-Time Password (OTP) for login is ${otp}. This code is valid for the next 5 minutes. Do not share it with anyone. Aplango Promo Services`, // Customize as needed
+        route: import.meta.env.VITE_SMS_ROUTE, // Replace with your actual route, e.g. "Transactional"
+        TemplateID: import.meta.env.VITE_DLT_TEMPLATE_ID, // Replace with actual DLT template ID
+        format: "JSON",
+      });
 
-      // Call your cloud function URL here
-      const response = await fetch(
-        "https://us-central1-aplango.cloudfunctions.net/sendSms",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ phoneNumber: formattedPhone, otp }),
-        }
-      );
+      const url = `${baseUrl}?${queryParams.toString()}`;
+      console.log(url);
+
+      const response = await fetch(url, {
+        method: "GET",
+      });
 
       const result = await response.json();
 
-      if (response.ok && result.success) {
+      if (response.ok && result.status === "success") {
         console.log("SMS sent successfully:", result);
         return { success: true, data: result };
       } else {
@@ -136,6 +145,8 @@ export default function AnimatedLoginForm() {
     } catch (error) {
       console.error("Error sending SMS:", error);
       return { success: false, error: error.message };
+    } finally {
+      setSmsLoading(false);
     }
   };
 

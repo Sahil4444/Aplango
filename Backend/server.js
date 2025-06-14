@@ -24,10 +24,8 @@ app.post("/send-otp", async (req, res) => {
     TemplateID: process.env.DLT_TEMPLATE_ID,
     format: "JSON",
   });
-  console.log(message)
-  console.log(params.mobile)
 
-  const apiUrl = `http://bulk.nationalsms.in/sms-panel/api/http/index.php?${params.toString()}`;
+  const apiUrl = `https://bulk.nationalsms.in/sms-panel/api/http/index.php?${params.toString()}`;
 
   try {
     const response = await axios.get(apiUrl);
@@ -36,12 +34,10 @@ app.post("/send-otp", async (req, res) => {
     if (result.status?.toLowerCase() === "success") {
       return res.json({ success: true, otp });
     } else {
-      return res
-        .status(500)
-        .json({
-          success: false,
-          message: result.message || "SMS sending failed",
-        });
+      return res.status(500).json({
+        success: false,
+        message: result.message || "SMS sending failed",
+      });
     }
   } catch (error) {
     console.error("Error sending OTP:", error.message);
