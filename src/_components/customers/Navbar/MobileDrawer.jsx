@@ -142,7 +142,7 @@ const MobileDrawer = ({ isOpen, setIsOpen }) => {
           onClick={handleClientsHome}
           className="text-black hover:text-gray-600 block px-3 py-2 rounded-md text-base font-medium"
         >
-          Clients
+          Vendors
         </Link>
         <Link
           onClick={handleCareersHome}

@@ -23,14 +23,14 @@ const Navbar = () => {
 
     if (location.pathname === "/") {
       window.scroll({
-        top: 2200, // Scroll vertically to 100 pixels
+        top: 2110, // Scroll vertically to 100 pixels
         left: 0, // Don't change horizontal position
         behavior: "smooth", // Smooth scroll
       }); // Delay to allow page transition
     } else {
       navigate("/"); // Redirect to home
       setTimeout(() => {
-        window.scrollTo({ top: 2200, behavior: "smooth" }); // Scroll down smoothly
+        window.scrollTo({ top: 2110, behavior: "smooth" }); // Scroll down smoothly
       }, 100); // Normal About Us navigation
     }
   };
@@ -147,7 +147,7 @@ const Navbar = () => {
                 onMouseLeave={() => setIsClientsOpen(false)}
                 className="text-gray-800 relative hover:text-indigo-600 hover:cursor-pointer px-0 py-1 rounded-md text-md font-medium"
               >
-                Clients
+                Vendors
                 <span
                   style={{
                     transform: isClientsOpen ? "scaleX(1)" : "scaleX(0)",

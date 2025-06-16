@@ -51,18 +51,36 @@ export default function OffersPage() {
   const [isRedeeming, setIsRedeeming] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [userLoading, setUserLoading] = useState(true);
+  const [userNumber, setUserNumber] = useState("");
+  const [smsLoading, setSmsLoading] = useState(false);
 
   // Listen to authentication state changes
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setCurrentUser(user);
       setUserLoading(false);
 
-      if (!user) {
+      if (user) {
+        // Fetch user phone number
+        try {
+          const userDocRef = doc(firestore, "users", user.uid);
+          const userDoc = await getDoc(userDocRef);
+
+          if (userDoc.exists()) {
+            const userData = userDoc.data();
+            const phoneNumber = userData.phoneNumber || userData.phone || "";
+            setUserNumber(phoneNumber);
+          }
+        } catch (error) {
+          console.error("Error fetching user phone number:", error);
+          setUserNumber("");
+        }
+      } else {
         // Clear all states if user is not authenticated
         setRedeemedOffers({});
         setExpiredOffers({});
         setOfferTimers({});
+        setUserNumber("");
       }
     });
 
@@ -370,17 +388,77 @@ export default function OffersPage() {
         .VITE_EMAILJS_SEND_REDEEM_OFFER_MAIL_TEMPLATE_ID2;
       const public_key = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
-      await emailjs.send(service_id, template_id, templateParams, public_key);
+      // // Sms params
+      // const senderId = import.meta.env.VITE_SMS_SENDER_ID;
+      // const smsApiKey = import.meta.env.VITE_SMS_API_KEY;
+      // const smsTemplateId = import.meta.env.VITE_DLT_OFFER_TEMPLATE_ID;
+      // const senderName = import.meta.env.VITE_SMS_USERNAME;
+      // const smsRoute = import.meta.env.VITE_SMS_ROUTE;
 
-      toast.success(
-        "Offer Redeemed Successfully! Redemption details sent to your email.",
-        {
-          position: "top-center",
-        }
-      );
+      // const usernumber
+      const formattedPhone = userNumber.replace(/\D/g, "");
+      const baseUrl = "https://alots.in/sms-panel/api/http/index.php";
+
+      const queryParams = new URLSearchParams({
+        username: import.meta.env.VITE_SMS_USERNAME,
+        apikey: import.meta.env.VITE_SMS_API_KEY,
+        apirequest: "Text",
+        sender: import.meta.env.VITE_SMS_SENDER_ID, // Replace with your approved Sender ID
+        mobile: formattedPhone,
+        message: `Hello ${userName}, 🎉 Congratulations! ${selectedOffer.title} Offer for you! You have successfully redeemed the following offer: ${selectedOffer.desc} Terms and Conditions: ${selectedOffer.termsAndConditions} Enjoy your benefits!`,
+        route: import.meta.env.VITE_SMS_ROUTE, // Replace with your actual route, e.g. "Transactional"
+        TemplateID: import.meta.env.VITE_DLT_OFFER_TEMPLATE_ID, // Replace with actual DLT template ID
+        format: "JSON",
+      });
+
+      await emailjs.send(service_id, template_id, templateParams, public_key);
+      // toast.success(
+      //   "Offer Redeemed Successfully! Redemption details sent to your email.",
+      //   {
+      //     position: "top-center",
+      //   }
+      // );
 
       // Close the terms dialog
-      setTermsDialogOpen(false);
+      // setTermsDialogOpen(false);
+
+      const url = `${baseUrl}?${queryParams.toString()}`;
+      console.log(url);
+
+      const response = await fetch(url, {
+        method: "GET",
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.status === "success") {
+        console.log("SMS sent successfully:", result);
+        toast.success(
+          "Offer Redeemed Successfully! Redemption details sent to your email.",
+          {
+            position: "top-center",
+          }
+        );
+        // Close the terms dialog
+        setTermsDialogOpen(false);
+
+        return { success: true, data: result };
+      } else {
+        console.error("SMS sending failed:", result);
+        return {
+          success: false,
+          error: result.message || "SMS sending failed",
+        };
+      }
+
+      // Send via SMS
+      if (userNumber) {
+        console.log("SMS would be sent to:", userNumber);
+        console.log("SMS message:", msg);
+        // Add your SMS sending logic here
+      } else {
+        console.log("No phone number available for SMS");
+      }
     } catch (error) {
       console.error("Error redeeming offer:", error);
       toast.error("Failed to redeem offer. Please try again.", {
@@ -432,7 +510,7 @@ export default function OffersPage() {
   // Show loading state while checking authentication
   if (userLoading) {
     return (
-      <div className="container mx-auto px-4 pt-20 md:pt-24">
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
         <div className="flex items-center justify-center py-8">
           <PulseLoader
             color="#6366f1"
@@ -450,12 +528,12 @@ export default function OffersPage() {
   // Show login prompt if user is not authenticated
   if (!currentUser) {
     return (
-      <div className="container mx-auto px-4 pt-20 md:pt-24">
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
         <div className="text-center py-8">
-          <h1 className="text-3xl md:text-6xl font-bold text-center text-indigo-600 mb-6">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-center text-indigo-600 mb-4 sm:mb-6 leading-tight">
             Offers for you
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
             Please log in to view and redeem offers.
           </p>
         </div>
@@ -464,23 +542,25 @@ export default function OffersPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 pt-20 md:pt-24">
-      <h1 className="text-3xl md:text-6xl font-bold text-center text-indigo-600 mb-6">
-        Offers for you
-      </h1>
-      <p className="text-center mb-8">
-        Select your favorite brand and enjoy amazing offers tailored just for
-        you.
-      </p>
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
+      <div className="text-center mb-8 sm:mb-12">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-indigo-600 mb-4 sm:mb-6 leading-tight">
+          Offers for you
+        </h1>
+        <p className="text-base sm:text-lg text-center mb-8 max-w-2xl mx-auto leading-relaxed">
+          Select your favorite brand and enjoy amazing offers tailored just for
+          you.
+        </p>
+      </div>
 
-      <div className="max-w-xl mx-auto my-8">
+      <div className="max-w-xl mx-auto mb-8 sm:mb-12">
         <Select
           className="flex items-center justify-center"
           value={selectedBrand}
           onValueChange={(value) => setSelectedBrand(value)}
           disabled={loadingBrands}
         >
-          <SelectTrigger>
+          <SelectTrigger className="w-full h-12 text-base border border-gray-300 hover:border-gray-400 focus:border-indigo-500">
             <SelectValue
               placeholder={
                 loadingBrands ? "Loading brands..." : "Select brand or shop"
@@ -529,7 +609,7 @@ export default function OffersPage() {
               </span>
             </div>
           ) : offers.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 gap-4 sm:gap-6">
               {offers.map((offer) => (
                 <OfferCard
                   key={offer.id}
@@ -544,7 +624,7 @@ export default function OffersPage() {
             </div>
           ) : (
             <div className="text-center py-8">
-              <p className="text-muted-foreground">
+              <p className="text-muted-foreground text-base sm:text-lg">
                 No offers available for {selectedBrand} at the moment.
               </p>
             </div>
@@ -554,46 +634,55 @@ export default function OffersPage() {
 
       {/* Terms and Conditions Dialog */}
       <Dialog open={termsDialogOpen} onOpenChange={setTermsDialogOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md max-w-[95vw] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Terms and Conditions</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="text-lg sm:text-xl">
+              Terms and Conditions
+            </DialogTitle>
+            <DialogDescription className="text-sm sm:text-base">
               Please read and accept the following terms and conditions to
               redeem your offer.
             </DialogDescription>
           </DialogHeader>
-          <div className="max-h-[60vh] overflow-y-auto p-4 border rounded-md my-4">
-            <h3 className="font-semibold mb-2">{currentOffer?.desc}</h3>
-            <p className="mb-4 text-sm text-muted-foreground">
+          <div className="max-h-[50vh] overflow-y-auto p-4 border rounded-md my-4">
+            <h3 className="font-semibold mb-2 text-sm sm:text-base">
+              {currentOffer?.desc}
+            </h3>
+            <p className="mb-4 text-xs sm:text-sm text-muted-foreground">
               By accepting these terms, you agree to the following conditions
               for redeeming this offer:
             </p>
-            <div className="text-sm">
+            <div className="text-xs sm:text-sm">
               {currentOffer?.termsAndConditions ? (
                 <ol className="list-decimal list-inside space-y-2">
                   {currentOffer.termsAndConditions
                     .split(".")
                     .filter((term) => term.trim().length > 0)
                     .map((term, index) => (
-                      <li key={index} className="text-sm">
+                      <li key={index} className="text-xs sm:text-sm">
                         {term.trim()}.
                       </li>
                     ))}
                 </ol>
               ) : (
-                <p className="text-sm text-muted-foreground">
+                <p className="text-xs sm:text-sm text-muted-foreground">
                   Terms and conditions not available.
                 </p>
               )}
             </div>
           </div>
           <DialogFooter className="flex flex-col sm:flex-row sm:justify-between gap-2">
-            <Button variant="outline" onClick={() => setTermsDialogOpen(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setTermsDialogOpen(false)}
+              className="w-full sm:w-auto"
+            >
               Cancel
             </Button>
             <Button
               onClick={() => currentOffer && handleRedeem(currentOffer.id)}
               disabled={isRedeeming}
+              className="w-full sm:w-auto"
             >
               {isRedeeming ? (
                 <div className="flex items-center gap-2">
@@ -636,14 +725,16 @@ function OfferCard({
   const offerExpired = isOfferExpired() || isExpired;
 
   return (
-    <Card className="h-full flex flex-col">
-      <CardHeader>
-        <CardTitle className="text-2xl text-indigo-600 font-bold">
+    <Card className="h-full flex flex-col transition-all duration-200 hover:shadow-lg">
+      <CardHeader className="flex-1 p-4 sm:p-6">
+        <CardTitle className="text-lg sm:text-xl lg:text-2xl text-indigo-600 font-bold mb-2 leading-tight">
           {offer.title}
         </CardTitle>
-        <CardTitle className="text-lg">{offer.desc}</CardTitle>
+        <CardTitle className="text-sm sm:text-base lg:text-lg mb-3 leading-relaxed">
+          {offer.desc}
+        </CardTitle>
         {offer.expiryDate && (
-          <p className="text-sm text-muted-foreground">
+          <p className="text-xs sm:text-sm text-muted-foreground">
             Expires on:{" "}
             {new Date(offer.expiryDate).toLocaleDateString("en-GB", {
               day: "2-digit",
@@ -653,9 +744,9 @@ function OfferCard({
           </p>
         )}
       </CardHeader>
-      <CardFooter className="mt-auto">
+      <CardFooter className="mt-auto p-4 sm:p-6 pt-0">
         <Button
-          className="w-full"
+          className="w-full h-10 sm:h-11 text-sm sm:text-base"
           variant={offerExpired ? "secondary" : "default"}
           disabled={offerExpired}
           onClick={isRedeemed ? undefined : onRedeemClick}

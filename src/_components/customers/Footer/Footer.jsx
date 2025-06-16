@@ -220,12 +220,11 @@ function Footer() {
                 <ul className="space-y-2">
                   {policies.map((policy, index) => (
                     <li key={index}>
-                      <a
-                        href="/"
+                      <span
                         className="text-gray-600 hover:text-indigo-600 text-sm"
                       >
                         {policy}
-                      </a>
+                      </span>
                     </li>
                   ))}
                 </ul>

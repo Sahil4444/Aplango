@@ -1,14 +1,13 @@
-import React from "react";
-import Navbar from "../Navbar/Navbar";
 import Hero from "../Hero/Hero";
 import Clients from "../../Clients/Clients";
-import Footer from "../../Footer/Footer";
+import Banner from "../Hero/Banner";
 
 function Front() {
   return (
-    <div>
+    <div className="min-h-screen">
       <Hero />
       <Clients />
+      {/* <Banner /> */}
     </div>
   );
 }
