@@ -190,7 +190,7 @@ export default function Clients() {
         </button>
 
         {/* Play/Pause Button */}
-        <button onClick={toggleAutoPlay} className="absolute top-4 right-4 z-20 group">
+        {/* <button onClick={toggleAutoPlay} className="absolute top-4 right-4 z-20 group">
           <div className="w-12 h-12 bg-white/90 backdrop-blur-md rounded-full shadow-lg border border-white/30 flex items-center justify-center group-hover:bg-white group-hover:scale-105 transition-all duration-300">
             {isPaused ? (
               <Play className="w-4 h-4 text-gray-700 group-hover:text-green-600 transition-colors duration-300 ml-0.5" />
@@ -198,7 +198,7 @@ export default function Clients() {
               <Pause className="w-4 h-4 text-gray-700 group-hover:text-red-600 transition-colors duration-300" />
             )}
           </div>
-        </button>
+        </button> */}
 
         {/* Gradient Overlays for Fade Effect */}
         <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-slate-50 via-blue-50/80 to-transparent z-10 pointer-events-none" />
@@ -282,15 +282,13 @@ export default function Clients() {
       </div>
 
       {/* Status Indicators */}
-      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex items-center space-x-4">
-        {/* Manual Control Indicator */}
+      {/* <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex items-center space-x-4">
         {isManualControl && (
           <div className="bg-blue-500/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm text-white font-medium shadow-lg border border-blue-400/30 animate-pulse">
             🎮 Manual Control
           </div>
         )}
 
-        {/* Auto-play Status */}
         <div
           className={`backdrop-blur-sm px-3 py-1 rounded-full text-sm font-medium shadow-lg border transition-all duration-300 ${
             isPaused ? "bg-red-500/90 text-white border-red-400/30" : "bg-green-500/90 text-white border-green-400/30"
@@ -298,7 +296,7 @@ export default function Clients() {
         >
           {isPaused ? "⏸️ Paused" : "▶️ Auto-playing"}
         </div>
-      </div>
+      </div> */}
     </div>
   )
 }

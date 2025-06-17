@@ -38,7 +38,7 @@ const MobileDrawer = ({ isOpen, setIsOpen }) => {
     if (location.pathname === "/") {
       setIsOpen(false);
       window.scroll({
-        top: 5230, // Scroll vertically to 100 pixels
+        top: 4800, // Scroll vertically to 100 pixels
         left: 0, // Don't change horizontal position
         behavior: "smooth", // Smooth scroll
       }); // Delay to allow page transition
@@ -46,7 +46,7 @@ const MobileDrawer = ({ isOpen, setIsOpen }) => {
       setIsOpen(false);
       navigate("/"); // Redirect to home
       setTimeout(() => {
-        window.scrollTo({ top: 5230, behavior: "smooth" }); // Scroll down smoothly
+        window.scrollTo({ top: 4800, behavior: "smooth" }); // Scroll down smoothly
       }, 100); // Normal About Us navigation
     }
   };
@@ -68,7 +68,7 @@ const MobileDrawer = ({ isOpen, setIsOpen }) => {
     if (location.pathname === "/") {
       setIsOpen(false);
       window.scroll({
-        top: 2900, // Scroll vertically to 100 pixels
+        top: 2600, // Scroll vertically to 100 pixels
         left: 0, // Don't change horizontal position
         behavior: "smooth", // Smooth scroll
       }); // Delay to allow page transition
@@ -76,15 +76,20 @@ const MobileDrawer = ({ isOpen, setIsOpen }) => {
       setIsOpen(false);
       navigate("/"); // Redirect to home
       setTimeout(() => {
-        window.scrollTo({ top: 2900, behavior: "smooth" }); // Scroll down smoothly
+        window.scrollTo({ top: 2600, behavior: "smooth" }); // Scroll down smoothly
       }, 100); // Normal About Us navigation
     }
   };
-  
+
   const handleCareersHome = (event) => {
     event.preventDefault(); // Prevent default anchor behavior
     setIsOpen(false);
     navigate("/careers");
+    window.scroll({
+      top: 0, // Scroll vertically to 100 pixels
+      left: 0, // Don't change horizontal position
+      behavior: "smooth", // Smooth scroll
+    }); // Delay to allow page transition
   };
 
   const handleAboutClick = (event) => {
@@ -93,7 +98,7 @@ const MobileDrawer = ({ isOpen, setIsOpen }) => {
     if (location.pathname === "/") {
       setIsOpen(false);
       window.scroll({
-        top: 3800, // Scroll vertically to 100 pixels
+        top: 3100, // Scroll vertically to 100 pixels
         left: 0, // Don't change horizontal position
         behavior: "smooth", // Smooth scroll
       }); // Delay to allow page transition
@@ -101,7 +106,7 @@ const MobileDrawer = ({ isOpen, setIsOpen }) => {
       setIsOpen(false);
       navigate("/"); // Redirect to home
       setTimeout(() => {
-        window.scrollTo({ top: 3800, behavior: "smooth" }); // Scroll down smoothly
+        window.scrollTo({ top: 3100, behavior: "smooth" }); // Scroll down smoothly
       }, 100); // Normal About Us navigation
     }
   };
