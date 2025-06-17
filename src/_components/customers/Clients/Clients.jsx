@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react"
 import { ChevronLeft, ChevronRight, Play, Pause } from "lucide-react"
+
 import della from "../../../assets/clients/della.jpg";
 import dine from "../../../assets/clients/dine.jpg";
 import fountains from "../../../assets/clients/fountains.png";
@@ -18,7 +19,7 @@ import suzuki from "../../../assets/clients/suzuki.jpg";
 import talwalkers from "../../../assets/clients/talwalkers.jpg";
 import toss from "../../../assets/clients/toss.jpg";
 import yamaha from "../../../assets/clients/yamaha.webp";
-
+import { useNavigate } from "react-router-dom";
 const clientslist = [
   {
     cl_name: 1,
@@ -91,8 +92,10 @@ export default function Clients() {
   const [isManualControl, setIsManualControl] = useState(false)
   const [currentTranslate, setCurrentTranslate] = useState(0)
   const carouselRef = useRef(null)
-  const itemWidth = 224 // w-56 + gap-8 = 224px + 32px = 256px total
+  const itemWidth = 280 // Updated width to accommodate button
   const totalItems = clientslist.length
+
+  const navigate = useNavigate();
 
   // Duplicate items for seamless infinite scroll
   const duplicatedClients = [...clientslist, ...clientslist, ...clientslist]
@@ -139,6 +142,11 @@ export default function Clients() {
 
   const toggleAutoPlay = () => {
     setIsPaused(!isPaused)
+  }
+
+  const handleViewOffers = (clientName) => {
+    console.log(`Viewing offers for ${clientName}`)
+    // Add your view offers logic here
   }
 
   return (
@@ -189,17 +197,6 @@ export default function Clients() {
           <div className="absolute inset-0 bg-gradient-to-r from-indigo-400/20 to-purple-400/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         </button>
 
-        {/* Play/Pause Button */}
-        {/* <button onClick={toggleAutoPlay} className="absolute top-4 right-4 z-20 group">
-          <div className="w-12 h-12 bg-white/90 backdrop-blur-md rounded-full shadow-lg border border-white/30 flex items-center justify-center group-hover:bg-white group-hover:scale-105 transition-all duration-300">
-            {isPaused ? (
-              <Play className="w-4 h-4 text-gray-700 group-hover:text-green-600 transition-colors duration-300 ml-0.5" />
-            ) : (
-              <Pause className="w-4 h-4 text-gray-700 group-hover:text-red-600 transition-colors duration-300" />
-            )}
-          </div>
-        </button> */}
-
         {/* Gradient Overlays for Fade Effect */}
         <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-slate-50 via-blue-50/80 to-transparent z-10 pointer-events-none" />
         <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-slate-50 via-blue-50/80 to-transparent z-10 pointer-events-none" />
@@ -222,7 +219,7 @@ export default function Clients() {
           >
             {duplicatedClients.map((client, index) => (
               <div key={`${client.cl_name}-${index}`} className="flex-shrink-0 group cursor-pointer">
-                <div className="relative w-40 h-28 md:w-48 md:h-32 lg:w-56 lg:h-36">
+                <div className="relative w-44 h-48 md:w-52 md:h-56 lg:w-64 lg:h-64">
                   {/* Card Background with Glassmorphism */}
                   <div className="absolute inset-0 bg-white/70 backdrop-blur-md rounded-2xl border border-white/30 shadow-lg group-hover:shadow-2xl transition-all duration-500 group-hover:scale-105">
                     {/* Gradient Overlay on Hover */}
@@ -232,25 +229,37 @@ export default function Clients() {
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 rounded-2xl" />
                   </div>
 
-                  {/* Logo Container */}
-                  <div className="relative z-10 flex items-center justify-center h-full p-6">
-                    <img
-                      src={client.client_img || "/placeholder.svg"}
-                      alt={`${client.name} logo`}
-                      className="max-w-full max-h-full object-contain filter grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:scale-110"
-                    />
-                  </div>
-
-                  {/* Hover Tooltip */}
-                  <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none">
-                    <div className="bg-gray-900 text-white px-3 py-1 rounded-lg text-sm font-medium whitespace-nowrap shadow-lg">
-                      {client.name}
-                      <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45" />
+                  {/* Content Container */}
+                  <div className="relative z-10 flex flex-col h-full p-4">
+                    {/* Logo Container */}
+                    <div className="flex-1 flex items-center justify-center mb-4">
+                      <img
+                        src={client.client_img || "/placeholder.svg"}
+                        alt={`${client.name} logo`}
+                        className="max-w-full max-h-20 object-contain filter grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:scale-110"
+                      />
                     </div>
+
+                    {/* Brand Name */}
+                    <div className="text-center mb-3">
+                      <h3 className="font-semibold text-gray-800 text-sm md:text-base">
+                        {client.name}
+                      </h3>
+                    </div>
+
+                    {/* View Offers Button */}
+                    <button
+                      onClick={() => navigate("/login")}
+                      className="w-full py-2 px-4 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-700 hover:via-purple-700 hover:to-pink-700 text-white font-medium text-sm rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 hover:ring-2 hover:ring-indigo-600 hover:ring-offset-2 active:scale-95"
+                    >
+                      <span className="flex items-center justify-center space-x-2">
+                        <span>View Offers</span>
+                      </span>
+                    </button>
                   </div>
 
                   {/* Glow Effect */}
-                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-indigo-400/20 to-purple-400/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10" />
+                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-emerald-400/20 to-teal-400/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10" />
                 </div>
               </div>
             ))}
@@ -280,23 +289,6 @@ export default function Clients() {
           ))}
         </div>
       </div>
-
-      {/* Status Indicators */}
-      {/* <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex items-center space-x-4">
-        {isManualControl && (
-          <div className="bg-blue-500/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm text-white font-medium shadow-lg border border-blue-400/30 animate-pulse">
-            🎮 Manual Control
-          </div>
-        )}
-
-        <div
-          className={`backdrop-blur-sm px-3 py-1 rounded-full text-sm font-medium shadow-lg border transition-all duration-300 ${
-            isPaused ? "bg-red-500/90 text-white border-red-400/30" : "bg-green-500/90 text-white border-green-400/30"
-          }`}
-        >
-          {isPaused ? "⏸️ Paused" : "▶️ Auto-playing"}
-        </div>
-      </div> */}
     </div>
   )
 }
