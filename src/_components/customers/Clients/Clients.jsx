@@ -140,6 +140,15 @@ export default function Clients() {
     }, 3000)
   }
 
+  const viewOffersClick = ()=>{
+    navigate("/login");
+    window.scroll({
+        top: 0, // Scroll vertically to 100 pixels
+        left: 0, // Don't change horizontal position
+        behavior: "smooth", // Smooth scroll
+      }); // Delay to allow page transition
+  }
+
   const toggleAutoPlay = () => {
     setIsPaused(!isPaused)
   }
@@ -249,7 +258,7 @@ export default function Clients() {
 
                     {/* View Offers Button */}
                     <button
-                      onClick={() => navigate("/login")}
+                      onClick={viewOffersClick}
                       className="w-full py-2 px-4 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-700 hover:via-purple-700 hover:to-pink-700 text-white font-medium text-sm rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 hover:ring-2 hover:ring-indigo-600 hover:ring-offset-2 active:scale-95"
                     >
                       <span className="flex items-center justify-center space-x-2">
