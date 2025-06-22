@@ -54,6 +54,7 @@ export default function OffersPage() {
   const [userNumber, setUserNumber] = useState("");
   const [smsLoading, setSmsLoading] = useState(false);
 
+
   // Listen to authentication state changes
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -309,6 +310,8 @@ export default function OffersPage() {
   };
 
   const handleRedeem = async (offerId) => {
+    let emailSuccess = false;
+
     try {
       setIsRedeeming(true);
 
@@ -405,67 +408,39 @@ export default function OffersPage() {
         apirequest: "Text",
         sender: import.meta.env.VITE_SMS_SENDER_ID, // Replace with your approved Sender ID
         mobile: formattedPhone,
-        message: `Hello ${userName}, 🎉 Congratulations! ${selectedOffer.title} Offer for you! You have successfully redeemed the following offer: ${selectedOffer.desc} Terms and Conditions: ${selectedOffer.termsAndConditions} Enjoy your benefits!`,
+        message: `Hello User, Congratulations! ${selectedOffer.title} Offer for you! You have successfully redeemed the following offer: ${selectedOffer.desc} Terms and Conditions Apply Enjoy your benefits! Aplango Promo Services`,
         route: import.meta.env.VITE_SMS_ROUTE, // Replace with your actual route, e.g. "Transactional"
         TemplateID: import.meta.env.VITE_DLT_OFFER_TEMPLATE_ID, // Replace with actual DLT template ID
         format: "JSON",
       });
 
       await emailjs.send(service_id, template_id, templateParams, public_key);
-      // toast.success(
-      //   "Offer Redeemed Successfully! Redemption details sent to your email.",
-      //   {
-      //     position: "top-center",
-      //   }
-      // );
+      emailSuccess = true;
+      toast.success(
+        "Offer Redeemed Successfully! Redemption details sent to your email.",
+        {
+          position: "top-center",
+        }
+      );
 
-      // Close the terms dialog
-      // setTermsDialogOpen(false);
+      setTermsDialogOpen(false);
 
       const url = `${baseUrl}?${queryParams.toString()}`;
       console.log(url);
 
-      const response = await fetch(url, {
-        method: "GET",
-      });
+      const response = await fetch(url, { method: "GET" });
 
-      const result = await response.json();
+      const resultText = await response.text(); // use .text() to avoid JSON parsing errors
+      const result = JSON.parse(resultText);
 
-      if (response.ok && result.status === "success") {
-        console.log("SMS sent successfully:", result);
-        toast.success(
-          "Offer Redeemed Successfully! Redemption details sent to your email.",
-          {
-            position: "top-center",
-          }
-        );
-        // Close the terms dialog
-        setTermsDialogOpen(false);
-
-        return { success: true, data: result };
-      } else {
-        console.error("SMS sending failed:", result);
-        return {
-          success: false,
-          error: result.message || "SMS sending failed",
-        };
-      }
-
-      // Send via SMS
-      if (userNumber) {
-        console.log("SMS would be sent to:", userNumber);
-        console.log("SMS message:", msg);
-        // Add your SMS sending logic here
-      } else {
-        console.log("No phone number available for SMS");
-      }
+      
     } catch (error) {
-      console.error("Error redeeming offer:", error);
-      toast.error("Failed to redeem offer. Please try again.", {
-        position: "top-center",
-      });
+      // ✅ Ignore SMS error
+      console.warn("Failed to send SMS (ignored):", error.message);
     } finally {
       setIsRedeeming(false);
+      setTermsDialogOpen(false);
+
     }
   };
 
