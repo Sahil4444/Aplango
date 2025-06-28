@@ -16,6 +16,7 @@ import { toast } from "react-toastify"
 
 function BrandRegister() {
   const [brandName, setBrandName] = useState("")
+  const [brandEmail, setBrandEmail] = useState("")
   const [termsConditions, setTermsConditions] = useState("")
   const [loading, setLoading] = useState(false)
   const [alert, setAlert] = useState({ show: false, type: "", message: "" })
@@ -24,7 +25,7 @@ function BrandRegister() {
     e.preventDefault()
 
     // Basic validation
-    if (!brandName.trim() || !termsConditions.trim()) {
+    if (!brandName.trim() || !termsConditions.trim() || !brandEmail.trim()) {
       setAlert({
         show: true,
         type: "error",
@@ -54,6 +55,7 @@ function BrandRegister() {
       // Add a new document to the collection
       await addDoc(brandsCollection, {
         brandName: brandName,
+        brandEmail: brandEmail,
         termsConditions: termsConditions,
         createdAt: serverTimestamp(), // Firestore server timestamp
       })
@@ -64,6 +66,7 @@ function BrandRegister() {
       // Reset form
       setBrandName("")
       setTermsConditions("")
+      setBrandEmail("")
     } catch (error) {
       console.error("Error registering brand:", error)
       toast.error("Something went wrong!");
@@ -102,6 +105,16 @@ function BrandRegister() {
                 value={brandName}
                 onChange={(e) => setBrandName(e.target.value)}
                 placeholder="Enter your brand name"
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="brand-name">Brand Email id</Label>
+              <Input
+                id="brand-email"
+                value={brandEmail}
+                onChange={(e) => setBrandEmail(e.target.value)}
+                placeholder="Enter your brand email id"
                 required
               />
             </div>
