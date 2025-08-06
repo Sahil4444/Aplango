@@ -10,15 +10,15 @@ function PagesLayout() {
   const adminUser = getAdminUser();
 
   useEffect(() => {
-    if (!adminUser && location.pathname !== "/Aplango/admin/login") {
-      navigate("/Aplango/admin/login");
+    if (!adminUser && location.pathname !== "/admin/login") {
+      navigate("/admin/login");
     }
     // Don't redirect again if already on login page
   }, []); // Run only on initial render
 
   const handleLogout = () => {
     logoutAdmin();
-    navigate("/Aplango/admin/login");
+    navigate("/admin/login");
   };
 
   return (

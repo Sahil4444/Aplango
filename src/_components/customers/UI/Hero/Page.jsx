@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect } from "react";
 import {
   Select,
@@ -21,7 +20,6 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
-
 import { auth, firestore } from "../../../../../Database/Firebase";
 import {
   doc,
@@ -54,19 +52,16 @@ export default function OffersPage() {
   const [userNumber, setUserNumber] = useState("");
   const [smsLoading, setSmsLoading] = useState(false);
 
-
   // Listen to authentication state changes
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setCurrentUser(user);
       setUserLoading(false);
-
       if (user) {
         // Fetch user phone number
         try {
           const userDocRef = doc(firestore, "users", user.uid);
           const userDoc = await getDoc(userDocRef);
-
           if (userDoc.exists()) {
             const userData = userDoc.data();
             const phoneNumber = userData.phoneNumber || userData.phone || "";
@@ -95,12 +90,10 @@ export default function OffersPage() {
         setLoadingBrands(true);
         const brandsCollection = collection(firestore, "brands");
         const brandsSnapshot = await getDocs(brandsCollection);
-
         const brandsData = brandsSnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
-
         setBrands(brandsData);
       } catch (error) {
         console.error("Error fetching brands:", error);
@@ -131,12 +124,10 @@ export default function OffersPage() {
           where("title", "==", selectedBrand)
         );
         const offersSnapshot = await getDocs(offersQuery);
-
         const offersData = offersSnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
-
         setOffers(offersData);
       } catch (error) {
         console.error("Error fetching offers:", error);
@@ -160,7 +151,6 @@ export default function OffersPage() {
         // Fetch user data to get cardId
         const userDocRef = doc(firestore, "users", currentUser.uid);
         const userDoc = await getDoc(userDocRef);
-
         if (!userDoc.exists()) {
           console.error("User document not found");
           return;
@@ -176,7 +166,6 @@ export default function OffersPage() {
 
         // Use cardId instead of user UID for offer states
         const cardOffersRef = doc(firestore, "cardOffers", cardId);
-
         const unsubscribe = onSnapshot(
           cardOffersRef,
           (doc) => {
@@ -268,7 +257,6 @@ export default function OffersPage() {
         // Fetch user data to get cardId
         const userDocRef = doc(firestore, "users", currentUser.uid);
         const userDoc = await getDoc(userDocRef);
-
         if (!userDoc.exists()) {
           console.error("User document not found");
           return;
@@ -311,7 +299,6 @@ export default function OffersPage() {
 
   const handleRedeem = async (offerId) => {
     let emailSuccess = false;
-
     try {
       setIsRedeeming(true);
 
@@ -397,11 +384,10 @@ export default function OffersPage() {
       // const smsTemplateId = import.meta.env.VITE_DLT_OFFER_TEMPLATE_ID;
       // const senderName = import.meta.env.VITE_SMS_USERNAME;
       // const smsRoute = import.meta.env.VITE_SMS_ROUTE;
-
       // const usernumber
+
       const formattedPhone = userNumber.replace(/\D/g, "");
       const baseUrl = "https://alots.in/sms-panel/api/http/index.php";
-
       const queryParams = new URLSearchParams({
         username: import.meta.env.VITE_SMS_USERNAME,
         apikey: import.meta.env.VITE_SMS_API_KEY,
@@ -416,6 +402,7 @@ export default function OffersPage() {
 
       await emailjs.send(service_id, template_id, templateParams, public_key);
       emailSuccess = true;
+
       toast.success(
         "Offer Redeemed Successfully! Redemption details sent to your email.",
         {
@@ -427,20 +414,15 @@ export default function OffersPage() {
 
       const url = `${baseUrl}?${queryParams.toString()}`;
       console.log(url);
-
       const response = await fetch(url, { method: "GET" });
-
       const resultText = await response.text(); // use .text() to avoid JSON parsing errors
       const result = JSON.parse(resultText);
-
-      
-    } catch (error) {
+          } catch (error) {
       // ✅ Ignore SMS error
       console.warn("Failed to send SMS (ignored):", error.message);
     } finally {
       setIsRedeeming(false);
       setTermsDialogOpen(false);
-
     }
   };
 
@@ -451,7 +433,6 @@ export default function OffersPage() {
       // Fetch user data to get cardId
       const userDocRef = doc(firestore, "users", currentUser.uid);
       const userDoc = await getDoc(userDocRef);
-
       if (!userDoc.exists()) {
         console.error("User document not found");
         return;
@@ -584,7 +565,7 @@ export default function OffersPage() {
               </span>
             </div>
           ) : offers.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 gap-4 sm:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 sm:gap-6">
               {offers.map((offer) => (
                 <OfferCard
                   key={offer.id}
@@ -689,6 +670,9 @@ function OfferCard({
   onRedeemClick,
   onExpire,
 }) {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const maxLength = 60; // Maximum characters to show before truncation
+
   // Check if offer has expired based on expiryDate
   const isOfferExpired = () => {
     if (!offer.expiryDate) return false;
@@ -699,29 +683,70 @@ function OfferCard({
 
   const offerExpired = isOfferExpired() || isExpired;
 
+  // Generate a random brand image based on brand name
+  const getBrandImage = (brandName) => {
+    const seed = brandName.toLowerCase().replace(/\s+/g, '');
+    return `/placeholder.svg?height=80&width=80&query=${encodeURIComponent(`${brandName} brand logo`)}`;
+  };
+
+  const shouldTruncate = offer.desc && offer.desc.length > maxLength;
+  const displayText = shouldTruncate && !isExpanded 
+    ? offer.desc.substring(0, maxLength) + "..."
+    : offer.desc;
+
   return (
-    <Card className="h-full flex flex-col transition-all duration-200 hover:shadow-lg">
-      <CardHeader className="flex-1 p-4 sm:p-6">
-        <CardTitle className="text-lg sm:text-xl lg:text-2xl text-indigo-600 font-bold mb-2 leading-tight">
+    <Card className="w-full h-64 sm:h-72 md:h-80 lg:h-72 xl:h-80 flex flex-col transition-all duration-200 hover:shadow-lg">
+      <CardHeader className="flex-none p-3 sm:p-4 flex flex-col items-center">
+        {/* Brand Image */}
+        <div className="flex justify-center mb-2">
+          <img
+            src={getBrandImage(offer.title) || "/placeholder.svg"}
+            alt={`${offer.title} logo`}
+            className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover border-2 border-gray-200"
+          />
+        </div>
+        
+        {/* Brand Name */}
+        <CardTitle className="text-sm sm:text-base font-bold mb-2 text-center leading-tight text-indigo-600">
           {offer.title}
         </CardTitle>
-        <CardTitle className="text-sm sm:text-base lg:text-lg mb-3 leading-relaxed">
-          {offer.desc}
-        </CardTitle>
+      </CardHeader>
+      
+      {/* Offer Description Section with fixed height */}
+      <div className="flex-1 px-3 sm:px-4 flex flex-col justify-start">
+        <div className="h-16 sm:h-20 overflow-hidden">
+          <p className="text-xs sm:text-sm text-center leading-relaxed">
+            {displayText}
+          </p>
+        </div>
+        
+        {shouldTruncate && (
+          <div className="mt-1 flex justify-center">
+            <button
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="text-xs text-indigo-600 hover:text-indigo-800 font-medium"
+            >
+              {isExpanded ? "Less" : "More"}
+            </button>
+          </div>
+        )}
+      </div>
+      
+      <CardFooter className="flex-none p-3 sm:p-4 pt-0 flex flex-col gap-2">
+        {/* Expiry Date */}
         {offer.expiryDate && (
-          <p className="text-xs sm:text-sm text-muted-foreground">
-            Expires on:{" "}
-            {new Date(offer.expiryDate).toLocaleDateString("en-GB", {
+          <p className="text-xs text-muted-foreground text-center h-4">
+            Expires: {new Date(offer.expiryDate).toLocaleDateString("en-GB", {
               day: "2-digit",
               month: "2-digit",
               year: "numeric",
             })}
           </p>
         )}
-      </CardHeader>
-      <CardFooter className="mt-auto p-4 sm:p-6 pt-0">
+        
+        {/* Redeem Button */}
         <Button
-          className="w-full h-10 sm:h-11 text-sm sm:text-base"
+          className="w-full h-8 sm:h-9 text-xs sm:text-sm"
           variant={offerExpired ? "secondary" : "default"}
           disabled={offerExpired}
           onClick={isRedeemed ? undefined : onRedeemClick}

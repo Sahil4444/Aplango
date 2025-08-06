@@ -43,7 +43,7 @@ function AdminLogin() {
           position: "top-center",
         });
         localStorage.setItem("adminUser", JSON.stringify(adminData));
-        navigate("/Aplango/admin/");
+        navigate("/admin/");
 
         // Redirect or update state here
       } else {
