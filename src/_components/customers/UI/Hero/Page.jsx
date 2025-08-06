@@ -537,7 +537,14 @@ export default function OffersPage() {
             ) : brands.length > 0 ? (
               brands.map((brand) => (
                 <SelectItem key={brand.id} value={brand.brandName}>
-                  {brand.brandName}
+                  <div className="flex items-center gap-3">
+                    <img
+                      src={brand.brandlogo || `/placeholder.svg?height=24&width=32&query=${encodeURIComponent(`${brand.brandName} brand logo`)}`}
+                      alt={`${brand.brandName} logo`}
+                      className="w-8 h-6 object-contain rounded border border-gray-200 bg-white flex-shrink-0"
+                    />
+                    <span className="truncate">{brand.brandName}</span>
+                  </div>
                 </SelectItem>
               ))
             ) : (
@@ -566,17 +573,23 @@ export default function OffersPage() {
             </div>
           ) : offers.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 sm:gap-6">
-              {offers.map((offer) => (
-                <OfferCard
-                  key={offer.id}
-                  offer={offer}
-                  isRedeemed={!!redeemedOffers[offer.id]}
-                  isExpired={!!expiredOffers[offer.id]}
-                  timeRemaining={offerTimers[offer.id]}
-                  onRedeemClick={() => openTermsDialog(offer)}
-                  onExpire={() => handleExpire(offer.id)}
-                />
-              ))}
+              {offers.map((offer) => {
+                // Find the brand data for this offer
+                const brandData = brands.find(brand => brand.brandName === offer.title);
+                
+                return (
+                  <OfferCard
+                    key={offer.id}
+                    offer={offer}
+                    brandLogo={brandData?.brandlogo} // Pass the brand logo
+                    isRedeemed={!!redeemedOffers[offer.id]}
+                    isExpired={!!expiredOffers[offer.id]}
+                    timeRemaining={offerTimers[offer.id]}
+                    onRedeemClick={() => openTermsDialog(offer)}
+                    onExpire={() => handleExpire(offer.id)}
+                  />
+                );
+              })}
             </div>
           ) : (
             <div className="text-center py-8">
@@ -664,6 +677,7 @@ export default function OffersPage() {
 
 function OfferCard({
   offer,
+  brandLogo, // Add this new prop
   isRedeemed,
   isExpired,
   timeRemaining,
@@ -683,12 +697,6 @@ function OfferCard({
 
   const offerExpired = isOfferExpired() || isExpired;
 
-  // Generate a random brand image based on brand name
-  const getBrandImage = (brandName) => {
-    const seed = brandName.toLowerCase().replace(/\s+/g, '');
-    return `/placeholder.svg?height=80&width=80&query=${encodeURIComponent(`${brandName} brand logo`)}`;
-  };
-
   const shouldTruncate = offer.desc && offer.desc.length > maxLength;
   const displayText = shouldTruncate && !isExpanded 
     ? offer.desc.substring(0, maxLength) + "..."
@@ -700,9 +708,9 @@ function OfferCard({
         {/* Brand Image */}
         <div className="flex justify-center mb-2">
           <img
-            src={getBrandImage(offer.title) || "/placeholder.svg"}
+            src={brandLogo || `/placeholder.svg?height=80&width=80&query=${encodeURIComponent(`${offer.title} brand logo`)}`}
             alt={`${offer.title} logo`}
-            className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover border-2 border-gray-200"
+            className="w-16 h-12 sm:w-20 sm:h-16 object-contain border border-gray-200 rounded-md bg-white p-1"
           />
         </div>
         
