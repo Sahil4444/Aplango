@@ -101,7 +101,7 @@ function Footer() {
     }
   };
 
-  const presence = [{ country: "India", email: "info@aplango.com" }];
+  const presence = [{ country: "India", email: "aplangodotcom@gmail.com" }];
 
   const policies = [
     "Privacy Policy",
@@ -192,10 +192,10 @@ function Footer() {
                 <Mail className="w-5 h-5 text-indigo-600 mt-0" />
                 <p className="text-gray-600 text-sm">aplangodotcom@gmail.com</p>
               </div>
-              <div className="flex items-start space-x-2">
+              {/* <div className="flex items-start space-x-2">
                 <Mail className="w-5 h-5 text-indigo-600 mt-0" />
-                <p className="text-gray-600 text-sm">info@aplango.com</p>
-              </div>
+                <p className="text-gray-600 text-sm">aplangodotcom@gmail.com</p>
+              </div> */}
               <div className="flex items-start space-x-2">
                 <Phone className="w-5 h-5 text-indigo-600 mt-1" />
                 <p className="text-gray-600 text-sm">+919930030693</p>
